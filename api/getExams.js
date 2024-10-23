@@ -2,7 +2,7 @@ import { exams } from '../drizzle/schema.js';
 import { authenticateUser } from "./_apiUtils.js";
 import { neon } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-http';
-import { eq } from 'drizzle-orm';
+import { eq, gt } from 'drizzle-orm';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -16,9 +16,11 @@ export default async function handler(req, res) {
     const sql = neon(process.env.NEON_DB_URL);
     const db = drizzle(sql);
 
+    const today = new Date();
+
     const result = await db.select()
       .from(exams)
-      .where(eq(exams.userId, user.id));
+      .where(eq(exams.userId, user.id), gt(exams.examDate, today));
 
     res.status(200).json(result);
   } catch (error) {

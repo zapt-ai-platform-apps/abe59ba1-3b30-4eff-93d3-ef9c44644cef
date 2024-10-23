@@ -4,12 +4,15 @@ import { format } from 'date-fns';
 export default function ExamList(props) {
   const { exams, loading } = props;
 
+  const today = new Date();
+  const upcomingExams = () => exams().filter(exam => new Date(exam.examDate) >= today);
+
   return (
     <div>
       <h2 class="text-2xl font-bold mb-4 text-purple-600">Your Exams</h2>
       <Show when={!loading()} fallback={<p>Loading exams...</p>}>
         <div class="space-y-4 max-h-[calc(100vh-300px)] overflow-y-auto pr-4">
-          <For each={exams()}>
+          <For each={upcomingExams()}>
             {(exam) => (
               <div class="bg-white p-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 cursor-pointer">
                 <p class="font-semibold text-lg text-purple-600 mb-1">{exam.subject}</p>

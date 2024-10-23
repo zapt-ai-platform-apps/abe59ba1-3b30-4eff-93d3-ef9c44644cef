@@ -10,6 +10,8 @@ UpGrade is an app designed to help students prepare for their school examination
 - **Personalized Revision Timetable**: Automatically generates a monthly calendar with scheduled revision sessions. The app distributes available revision sessions equally among all subjects, considering the period from the current date up to one week before each exam.
 - **Catch-Up Sessions**: In the week leading up to each exam, all scheduled sessions for that subject are designated as catch-up sessions, allowing students to review material they've already studied.
 - **Responsive Design**: Accessible on all devices with a user-friendly interface.
+- **Exclusion of Past Exams**: The timetable only displays upcoming exams and associated revision sessions. Exams that have already occurred are not shown.
+- **Accurate Session Scheduling**: Ensures that revision sessions are scheduled without duplication, providing a clear and organized timetable.
 
 ## User Journeys
 
@@ -64,8 +66,9 @@ UpGrade is an app designed to help students prepare for their school examination
 ### 4. Viewing and Managing Exams
 
 1. **View Exams**
-   - See a list of all your exams on the home page.
+   - See a list of all your upcoming exams on the home page.
    - Exams display subject, date, exam board, and teacher's name.
+   - **Note**: Exams that have already passed are not displayed.
 2. **Edit or Delete Exams**
    - (Future Functionality) Options to edit or delete exams will be available.
 
@@ -79,8 +82,10 @@ UpGrade is an app designed to help students prepare for their school examination
    - The timetable considers your availability preferences and schedules sessions from the current date up to one week before each exam.
    - **No sessions are scheduled for a subject after its exam date.**
    - **In the week before each exam, all sessions for that subject are designated as catch-up sessions to review previously studied material.**
+   - **Only upcoming exams and revision sessions are displayed; past exams are excluded.**
    - Exam dates are highlighted with a red border.
    - Each day displays the scheduled revision sessions with the subject allocated.
+   - Duplicate sessions are eliminated, ensuring a clear timetable.
 3. **Detailed View**
    - Click on a date to view detailed revision tasks (Future Functionality).
 

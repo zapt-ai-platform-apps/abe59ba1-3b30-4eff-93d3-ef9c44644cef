@@ -8,8 +8,18 @@ export default function RevisionTimetable(props) {
   const timetable = createMemo(() => {
     const today = new Date();
 
+    // Filter out exams that have already passed
+    const futureExams = exams().filter((exam) => {
+      const examDate = new Date(exam.examDate);
+      return isAfter(examDate, today) || isSameDay(examDate, today);
+    });
+
+    if (futureExams.length === 0) {
+      return [];
+    }
+
     // Collect all dates from today to the latest exam date
-    const latestExamDate = exams().reduce((latest, exam) => {
+    const latestExamDate = futureExams.reduce((latest, exam) => {
       const examDate = new Date(exam.examDate);
       return examDate > latest ? examDate : latest;
     }, today);
@@ -46,9 +56,14 @@ export default function RevisionTimetable(props) {
     // Prepare a map to store sessions for each subject
     const subjectSessionsMap = {};
 
-    exams().forEach((exam) => {
+    futureExams.forEach((exam) => {
       const subject = exam.subject;
       const examDate = new Date(exam.examDate);
+
+      // Skip exams that have passed
+      if (isBefore(examDate, today)) {
+        return;
+      }
 
       // Calculate regular revision period and catch-up period
       const catchUpStartDate = addDays(examDate, -7);
@@ -78,7 +93,7 @@ export default function RevisionTimetable(props) {
         ) {
           // Catch-up session
           subjectSessionsMap[subject].catchUp.push(session);
-        } else if (isBefore(sessionDate, catchUpStartDate)) {
+        } else if (isBefore(sessionDate, catchUpStartDate) || isSameDay(sessionDate, catchUpStartDate)) {
           // Regular session
           subjectSessionsMap[subject].regular.push(session);
         }
@@ -120,24 +135,30 @@ export default function RevisionTimetable(props) {
     // Combine all sessions
     const allSessions = [...regularSessionList, ...catchUpSessions];
 
-    // Group sessions by date
+    // Group sessions by date and time to avoid duplicates
     const timetableMap = {};
 
     allSessions.forEach((session) => {
       const dateKey = session.date.toDateString();
       if (!timetableMap[dateKey]) {
-        timetableMap[dateKey] = { date: session.date, sessions: [] };
+        timetableMap[dateKey] = { date: session.date, sessions: [], exams: [], isExamDay: false };
       }
-      timetableMap[dateKey].sessions.push(session);
+      // Check if the session already exists
+      const exists = timetableMap[dateKey].sessions.find(
+        (s) => s.time === session.time && s.subject === session.subject
+      );
+      if (!exists) {
+        timetableMap[dateKey].sessions.push(session);
+      }
     });
 
     // Add exams on that date
     days.forEach((day) => {
       const dateKey = day.toDateString();
       if (!timetableMap[dateKey]) {
-        timetableMap[dateKey] = { date: day, sessions: [] };
+        timetableMap[dateKey] = { date: day, sessions: [], exams: [], isExamDay: false };
       }
-      const examsOnDay = exams().filter((exam) => {
+      const examsOnDay = futureExams.filter((exam) => {
         const examDate = new Date(exam.examDate);
         return isSameDay(day, examDate);
       });

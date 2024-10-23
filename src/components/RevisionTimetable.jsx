@@ -53,103 +53,94 @@ export default function RevisionTimetable(props) {
       }
     });
 
-    // Prepare a map to store sessions for each subject
-    const subjectSessionsMap = {};
+    // Sort available sessions by date
+    availableSessions.sort((a, b) => a.date - b.date);
 
+    // Initialize subject session counts
+    const subjectSessionCounts = {};
     futureExams.forEach((exam) => {
-      const subject = exam.subject;
+      subjectSessionCounts[exam.subject] = 0;
+    });
+
+    const assignedSessions = [];
+    const assignedSessionIds = new Set();
+
+    // Assign catch-up sessions first
+    futureExams.forEach((exam) => {
       const examDate = new Date(exam.examDate);
-
-      // Skip exams that have passed
-      if (isBefore(examDate, today)) {
-        return;
-      }
-
-      // Calculate regular revision period and catch-up period
       const catchUpStartDate = addDays(examDate, -7);
-      const revisionEndDate = addDays(examDate, -1);
-
-      subjectSessionsMap[subject] = {
-        regular: [],
-        catchUp: [],
-      };
 
       availableSessions.forEach((session) => {
-        const sessionDate = session.date;
-
-        // Exclude sessions after exam date
-        if (isAfter(sessionDate, revisionEndDate)) {
-          return;
-        }
-
-        // Exclude sessions before today
-        if (isBefore(sessionDate, today)) {
+        const sessionId = `${session.date.toISOString()}_${session.time}`;
+        if (assignedSessionIds.has(sessionId)) {
           return;
         }
 
         if (
-          isAfter(sessionDate, catchUpStartDate) &&
-          isBefore(sessionDate, examDate)
+          (isAfter(session.date, catchUpStartDate) || isSameDay(session.date, catchUpStartDate)) &&
+          isBefore(session.date, examDate)
         ) {
-          // Catch-up session
-          subjectSessionsMap[subject].catchUp.push(session);
-        } else if (isBefore(sessionDate, catchUpStartDate) || isSameDay(sessionDate, catchUpStartDate)) {
-          // Regular session
-          subjectSessionsMap[subject].regular.push(session);
+          if (isBefore(session.date, examDate) || isSameDay(session.date, examDate)) {
+            assignedSessions.push({
+              ...session,
+              subject: exam.subject,
+              isCatchUp: true,
+            });
+            assignedSessionIds.add(sessionId);
+          }
         }
       });
     });
 
-    // Distribute regular sessions equally among subjects
-    const regularSessions = [];
-    const regularSessionList = [];
+    // Now assign regular sessions
+    availableSessions.forEach((session) => {
+      const sessionId = `${session.date.toISOString()}_${session.time}`;
+      if (assignedSessionIds.has(sessionId)) {
+        // Session already assigned
+        return;
+      }
 
-    Object.keys(subjectSessionsMap).forEach((subject) => {
-      regularSessions.push(...subjectSessionsMap[subject].regular);
-    });
+      // Determine valid subjects for this session
+      const validSubjects = futureExams.filter((exam) => {
+        const examDate = new Date(exam.examDate);
+        const catchUpStartDate = addDays(examDate, -7);
+        return isBefore(session.date, catchUpStartDate);
+      }).map((exam) => exam.subject);
 
-    regularSessions.sort((a, b) => a.date - b.date);
+      if (validSubjects.length === 0) {
+        return;
+      }
 
-    const subjects = Object.keys(subjectSessionsMap);
-    const numSubjects = subjects.length;
-
-    regularSessions.forEach((session, index) => {
-      const subjectIndex = index % numSubjects;
-      const subject = subjects[subjectIndex];
-      session.subject = subject;
-      regularSessionList.push(session);
-    });
-
-    // Assign catch-up sessions
-    const catchUpSessions = [];
-
-    Object.keys(subjectSessionsMap).forEach((subject) => {
-      const catchUpList = subjectSessionsMap[subject].catchUp;
-      catchUpList.forEach((session) => {
-        session.subject = subject;
-        session.isCatchUp = true;
-        catchUpSessions.push(session);
+      // Find subject with minimal session count
+      let minCount = Infinity;
+      let selectedSubject = null;
+      validSubjects.forEach((subject) => {
+        if (subjectSessionCounts[subject] < minCount) {
+          minCount = subjectSessionCounts[subject];
+          selectedSubject = subject;
+        }
       });
+
+      if (selectedSubject) {
+        assignedSessions.push({
+          ...session,
+          subject: selectedSubject,
+          isCatchUp: false,
+        });
+        assignedSessionIds.add(sessionId);
+        subjectSessionCounts[selectedSubject]++;
+      }
     });
 
-    // Combine all sessions
-    const allSessions = [...regularSessionList, ...catchUpSessions];
-
-    // Group sessions by date and time to avoid duplicates
+    // Group sessions by date
     const timetableMap = {};
 
-    allSessions.forEach((session) => {
+    assignedSessions.forEach((session) => {
       const dateKey = session.date.toDateString();
       if (!timetableMap[dateKey]) {
         timetableMap[dateKey] = { date: session.date, sessions: [], exams: [], isExamDay: false };
       }
-      // Check if the session already exists
-      const exists = timetableMap[dateKey].sessions.find(
-        (s) => s.time === session.time && s.subject === session.subject
-      );
-      if (!exists) {
-        timetableMap[dateKey].sessions.push(session);
-      }
+      timetableMap[dateKey].sessions.push(session);
     });
 
     // Add exams on that date

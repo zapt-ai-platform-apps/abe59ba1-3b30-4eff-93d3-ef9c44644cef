@@ -80,14 +80,12 @@ export default function RevisionTimetable(props) {
           (isAfter(session.date, catchUpStartDate) || isSameDay(session.date, catchUpStartDate)) &&
           isBefore(session.date, examDate)
         ) {
-          if (isBefore(session.date, examDate) || isSameDay(session.date, examDate)) {
-            assignedSessions.push({
-              ...session,
-              subject: exam.subject,
-              isCatchUp: true,
-            });
-            assignedSessionIds.add(sessionId);
-          }
+          assignedSessions.push({
+            ...session,
+            subject: exam.subject,
+            isCatchUp: true,
+          });
+          assignedSessionIds.add(sessionId);
         }
       });
     });
@@ -101,11 +99,25 @@ export default function RevisionTimetable(props) {
       }
 
       // Determine valid subjects for this session
-      const validSubjects = futureExams.filter((exam) => {
-        const examDate = new Date(exam.examDate);
-        const catchUpStartDate = addDays(examDate, -7);
-        return isBefore(session.date, catchUpStartDate);
-      }).map((exam) => exam.subject);
+      const validSubjects = futureExams
+        .filter((exam) => {
+          const examDate = new Date(exam.examDate);
+          const catchUpStartDate = addDays(examDate, -7);
+
+          // Exclude this exam if the session is in its catch-up period
+          if (
+            (isAfter(session.date, catchUpStartDate) || isSameDay(session.date, catchUpStartDate)) &&
+            isBefore(session.date, examDate)
+          ) {
+            return false;
+          }
+          // Exclude this exam if the session is on or after the exam date
+          if (isAfter(session.date, examDate) || isSameDay(session.date, examDate)) {
+            return false;
+          }
+          return true;
+        })
+        .map((exam) => exam.subject);
 
       if (validSubjects.length === 0) {
         return;

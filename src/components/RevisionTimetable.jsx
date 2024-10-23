@@ -26,10 +26,20 @@ export default function RevisionTimetable(props) {
 
     const days = eachDayOfInterval({ start: today, end: latestExamDate });
 
+    // Create a Set of exam dates for quick lookup
+    const examDatesSet = new Set(futureExams.map((exam) => new Date(exam.examDate).toDateString()));
+
     // Collect all available sessions
     const availableSessions = [];
 
     days.forEach((day) => {
+      const dayKey = day.toDateString();
+
+      // Skip if the day is an exam day
+      if (examDatesSet.has(dayKey)) {
+        return;
+      }
+
       const dayIndex = getDay(day); // 0 (Sunday) to 6 (Saturday)
       const dayNames = [
         'sunday',
@@ -78,7 +88,7 @@ export default function RevisionTimetable(props) {
         .filter((exam) => {
           const examDate = new Date(exam.examDate);
 
-          // Exclude this exam if the session is on or after the exam date
+          // Exclude this subject if the session is on or after the exam date
           if (isAfter(session.date, examDate) || isSameDay(session.date, examDate)) {
             return false;
           }
@@ -157,6 +167,15 @@ export default function RevisionTimetable(props) {
               <p class="font-semibold text-lg text-purple-600 mb-2">
                 {format(day.date, 'EEEE, MMMM do')}
               </p>
+              <For each={day.exams}>
+                {(exam) => (
+                  <div class="mt-2">
+                    <p class="text-red-600 font-semibold">
+                      Exam: {exam.subject}
+                    </p>
+                  </div>
+                )}
+              </For>
               {day.sessions.length > 0 ? (
                 <For each={day.sessions}>
                   {(session) => (
@@ -168,15 +187,6 @@ export default function RevisionTimetable(props) {
               ) : (
                 <p class="text-gray-800">No revision session scheduled.</p>
               )}
-              <For each={day.exams}>
-                {(exam) => (
-                  <div class="mt-2">
-                    <p class="text-red-600 font-semibold">
-                      Exam: {exam.subject}
-                    </p>
-                  </div>
-                )}
-              </For>
             </div>
           )}
         </For>

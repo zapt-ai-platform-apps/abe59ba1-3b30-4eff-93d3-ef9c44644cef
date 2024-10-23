@@ -9,6 +9,7 @@ UpGrade is an app designed to help students prepare for their school examination
 - **Exam Management**: Add, edit, and delete exams, including details like subject, date, examination board, and teacher's name.
 - **Personalized Revision Timetable**: Automatically generates a monthly calendar with scheduled revision sessions. The app distributes available revision sessions equally among all subjects, considering the period from the current date up to each exam.
   - **Concurrent Scheduling**: The app schedules regular revision sessions for all upcoming exams, ensuring continuous preparation across all subjects.
+- **Exclusion of Exam Dates**: Revision sessions are **not scheduled on the dates of exams**, allowing students to focus on their tests without additional study sessions.
 - **Responsive Design**: Accessible on all devices with a user-friendly interface.
 - **Exclusion of Past Exams**: The timetable only displays upcoming exams and associated revision sessions. Exams that have already occurred are not shown.
 - **Accurate Session Scheduling**: Ensures that revision sessions are scheduled without duplication, providing a clear and organized timetable.
@@ -81,9 +82,10 @@ UpGrade is an app designed to help students prepare for their school examination
    - Revision sessions are scheduled equally among all your subjects.
    - The timetable considers your availability preferences and schedules sessions from the current date up to each exam.
    - **Concurrent Scheduling**: Regular revision sessions for all upcoming exams are scheduled, ensuring continuous preparation across all subjects.
-   - **No sessions are scheduled for a subject after its exam date.**
+   - **No sessions are scheduled for a subject on or after its exam date.**
+   - **No revision sessions are scheduled on exam dates, allowing you to focus on your exams.**
+   - **Exam Dates**: Exam days are highlighted with a red border.
    - **Only upcoming exams and revision sessions are displayed; past exams are excluded.**
-   - Exam dates are highlighted with a red border.
    - Each day displays the scheduled revision sessions with the subject allocated.
    - Duplicate sessions are eliminated, ensuring a clear timetable.
 3. **Detailed View**

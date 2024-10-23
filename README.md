@@ -82,3 +82,13 @@ The app requires the following environment variables:
 - `NEON_DB_URL`: Connection string for the Neon Postgres database.
 
 Ensure these variables are set in your environment to run the app successfully.
+
+Create a `.env` file in the root directory of your project and add the following:
+
+```
+VITE_PUBLIC_APP_ID=your_supabase_project_url
+VITE_PUBLIC_ANON_KEY=your_supabase_anon_key
+NEON_DB_URL=your_neon_db_url_here
+```
+
+**Note:** Remember to set these environment variables when deploying to platforms like Vercel.

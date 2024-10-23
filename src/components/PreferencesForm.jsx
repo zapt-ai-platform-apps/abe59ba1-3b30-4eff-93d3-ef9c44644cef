@@ -2,17 +2,17 @@ import { createSignal, For } from 'solid-js';
 import { supabase } from '../supabaseClient';
 
 export default function PreferencesForm(props) {
-  const { fetchPreferences } = props;
+  const { fetchPreferences, preferences: existingPreferences, onCancel } = props;
 
   const [preferences, setPreferences] = createSignal({
-    monday: 'none',
-    tuesday: 'none',
-    wednesday: 'none',
-    thursday: 'none',
-    friday: 'none',
-    saturday: 'none',
-    sunday: 'none',
-    sessionDuration: 30,
+    monday: existingPreferences?.monday || 'none',
+    tuesday: existingPreferences?.tuesday || 'none',
+    wednesday: existingPreferences?.wednesday || 'none',
+    thursday: existingPreferences?.thursday || 'none',
+    friday: existingPreferences?.friday || 'none',
+    saturday: existingPreferences?.saturday || 'none',
+    sunday: existingPreferences?.sunday || 'none',
+    sessionDuration: existingPreferences?.sessionDuration || 30,
   });
 
   const [loading, setLoading] = createSignal(false);
@@ -32,6 +32,7 @@ export default function PreferencesForm(props) {
       });
       if (response.ok) {
         await fetchPreferences();
+        onCancel();
       } else {
         console.error('Error saving preferences');
       }
@@ -79,13 +80,22 @@ export default function PreferencesForm(props) {
               class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 box-border"
             />
           </div>
-          <button
-            type="submit"
-            class={`w-full px-6 py-3 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition duration-300 ease-in-out transform hover:scale-105 ${loading() ? 'opacity-50 cursor-not-allowed' : ''} cursor-pointer`}
-            disabled={loading()}
-          >
-            {loading() ? 'Saving...' : 'Save Preferences'}
-          </button>
+          <div class="flex space-x-4">
+            <button
+              type="submit"
+              class={`flex-1 px-6 py-3 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition duration-300 ease-in-out transform hover:scale-105 ${loading() ? 'opacity-50 cursor-not-allowed' : ''} cursor-pointer`}
+              disabled={loading()}
+            >
+              {loading() ? 'Saving...' : 'Save Preferences'}
+            </button>
+            <button
+              type="button"
+              class="flex-1 px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition duration-300 ease-in-out transform hover:scale-105 cursor-pointer"
+              onClick={onCancel}
+            >
+              Cancel
+            </button>
+          </div>
         </form>
       </div>
     </div>

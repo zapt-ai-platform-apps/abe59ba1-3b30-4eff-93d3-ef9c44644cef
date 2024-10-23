@@ -6,7 +6,11 @@ UpGrade is an app designed to help students prepare for their school examination
 
 - **User Authentication**: Secure login using your school email or social providers like Google, Facebook, and Apple.
 - **Initial Setup**: Upon first login, set your preferred revision schedule and session duration.
-- **Exam Management**: Add, edit, and delete exams, including details like subject, date, examination board, and teacher's name.
+- **Exam Management**:
+  - **Add Exams**: Enter details like subject, date, examination board, and teacher's name.
+  - **Edit Exams**: Modify existing exams to update any details.
+  - **Delete Exams**: Remove exams that are no longer relevant.
+- **Preference Management**: Edit your revision schedule preferences and session durations at any time.
 - **Personalized Revision Timetable**: Automatically generates a monthly calendar with scheduled revision sessions. The app distributes available revision sessions equally among all subjects, considering the period from the current date up to each exam.
   - **Concurrent Scheduling**: The app schedules regular revision sessions for all upcoming exams, ensuring continuous preparation across all subjects.
   - **Catch-Up Sessions**: In the week before each exam, the app marks revision sessions for that specific subject as "catch-up" sessions to help reinforce learning before the test.
@@ -71,10 +75,28 @@ UpGrade is an app designed to help students prepare for their school examination
    - See a list of all your upcoming exams on the home page.
    - Exams display subject, date, exam board, and teacher's name.
    - **Note**: Exams that have already passed are not displayed.
-2. **Edit or Delete Exams**
-   - (Future Functionality) Options to edit or delete exams will be available.
+2. **Edit Exams**
+   - Click the "Edit" button next to an exam.
+   - Modify the exam details in the form that appears.
+   - Click "Update Exam" to save changes.
+   - The exam list updates with the new details.
+3. **Delete Exams**
+   - Click the "Delete" button next to an exam.
+   - Confirm the deletion in the prompt that appears.
+   - The exam is removed from your list.
 
-### 5. Viewing Revision Timetable
+### 5. Editing Preferences
+
+1. **Access Preferences**
+   - On the home page, click on the "Edit Preferences" button.
+2. **Modify Preferences**
+   - Change your revision schedule for each day and the session duration.
+3. **Save Preferences**
+   - Click on "Save Preferences" to update your settings.
+   - A loading state indicates the saving process.
+   - Upon success, your timetable will update to reflect the new preferences.
+
+### 6. Viewing Revision Timetable
 
 1. **Access Timetable**
    - Scroll down to the "Revision Timetable" section.
@@ -95,7 +117,7 @@ UpGrade is an app designed to help students prepare for their school examination
 3. **Detailed View**
    - Click on a date to view detailed revision tasks (Future Functionality).
 
-### 6. Logging Out
+### 7. Logging Out
 
 1. **Sign Out**
    - Click on the "Sign Out" button at the top right corner.
@@ -112,7 +134,6 @@ UpGrade is an app designed to help students prepare for their school examination
 The app requires the following environment variables:
 
 - `VITE_PUBLIC_APP_ID`: Your Supabase project URL.
-- `VITE_PUBLIC_ANON_KEY`: Your Supabase public anonymous key.
 - `NEON_DB_URL`: Connection string for the Neon Postgres database.
 
 Ensure these variables are set in your environment to run the app successfully.
@@ -121,7 +142,6 @@ Create a `.env` file in the root directory of your project and add the following
 
 ```
 VITE_PUBLIC_APP_ID=your_supabase_project_url
-VITE_PUBLIC_ANON_KEY=your_supabase_anon_key
 NEON_DB_URL=your_neon_db_url_here
 ```
 

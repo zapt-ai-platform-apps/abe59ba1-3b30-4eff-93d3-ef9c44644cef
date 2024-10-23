@@ -24,6 +24,6 @@
     "tailwindcss": "^3.3.3",
     "vite": "^5.3.3",
     "vite-plugin-solid": "^2.7.2",
-    "drizzle-kit": "^0.24.3"
+    "drizzle-kit": "^0.24.2"
   }
 }

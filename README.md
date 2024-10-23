@@ -15,6 +15,7 @@ UpGrade is an app designed to help students prepare for their school examination
   - **Concurrent Scheduling**: The app schedules regular revision sessions for all upcoming exams, ensuring continuous preparation across all subjects.
   - **Catch-Up Sessions**: In the week before each exam, the app marks revision sessions for that specific subject as "catch-up" sessions to help reinforce learning before the test.
 - **Exclusion of Exam Dates**: Revision sessions are **not scheduled on the dates of exams**, allowing students to focus on their tests without additional study sessions.
+- **No Sessions After Exam Dates**: Revision sessions are **not scheduled on or after** the exam date for a subject.
 - **Responsive Design**: Accessible on all devices with a user-friendly interface.
 - **Exclusion of Past Exams**: The timetable only displays upcoming exams and associated revision sessions. Exams that have already occurred are not shown.
 - **Accurate Session Scheduling**: Ensures that revision sessions are scheduled without duplication, providing a clear and organized timetable.
@@ -128,6 +129,7 @@ UpGrade is an app designed to help students prepare for their school examination
 - **Supabase Authentication**: Used for secure user authentication and account management.
 - **Neon Postgres Database**: Stores exam information, user data, and preferences.
 - **Date-fns**: Handles date formatting and manipulation.
+- **Progressier**: Adds Progressive Web App (PWA) support to the app.
 
 ## Environment Variables
 

@@ -1,6 +1,6 @@
-import { createClient } from '@supabase/supabase-js';
+import { initializeZapt } from '@zapt/zapt-js';
 
-export const supabase = createClient(
+export const { createEvent, supabase } = initializeZapt(
   import.meta.env.VITE_PUBLIC_APP_ID,
   import.meta.env.VITE_PUBLIC_ANON_KEY
 );

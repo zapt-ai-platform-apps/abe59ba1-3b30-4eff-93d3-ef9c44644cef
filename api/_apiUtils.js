@@ -1,13 +1,8 @@
-import { createClient } from '@supabase/supabase-js';
+import { initializeZapt } from '@zapt/zapt-js';
 
-const supabase = createClient(
+const { supabase } = initializeZapt(
   process.env.VITE_PUBLIC_APP_ID,
-  process.env.VITE_PUBLIC_ANON_KEY,
-  {
-    auth: {
-      persistSession: false,
-    },
-  }
+  process.env.VITE_PUBLIC_ANON_KEY
 );
 
 export async function authenticateUser(req) {

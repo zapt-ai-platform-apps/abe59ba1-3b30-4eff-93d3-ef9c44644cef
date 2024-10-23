@@ -4,11 +4,9 @@ UpGrade is an app designed to help students prepare for their school examination
 
 ## Features
 
-- **User Authentication**: Create an account using your school email address and set a password.
+- **User Authentication**: Students can create an account using their school email address and set a password.
 - **Exam Management**: Add and manage exams, including subject, date, examination board, and teacher's name.
-- **Revision Timetable**: Generate a monthly calendar view of your revision schedule leading up to your exams.
-- **Responsive Design**: The app is fully responsive and works on all screen sizes.
-- **User-Friendly Interface**: Clean and intuitive UI for easy navigation.
+- **Revision Timetable**: Automatically generates a monthly calendar view of the student's revision schedule leading up to each exam.
 
 ## User Journeys
 
@@ -37,16 +35,16 @@ UpGrade is an app designed to help students prepare for their school examination
 
 ### 3. Viewing Revision Timetable
 
-1. Navigate to the "Revision Timetable" section on the home page.
+1. Navigate to the "Revision Timetable" section.
 2. View your personalized revision timetable in a monthly calendar format.
-3. Exam dates are highlighted in red, and revision sessions are scheduled leading up to each exam.
-4. Hover over or click on any date to see detailed revision tasks for that day.
+3. Exam dates are highlighted, and revision sessions are scheduled leading up to each exam date.
+4. Click on any date to see detailed revision tasks for that day.
 
 ### 4. Managing Exams
 
-1. View a list of all your added exams under "Your Exams".
+1. View a list of all your added exams.
 2. Edit or delete any exam entries as needed.
-3. Updated exams are reflected in your revision timetable.
+3. Changes are reflected in your revision timetable.
 
 ### 5. Logging Out
 

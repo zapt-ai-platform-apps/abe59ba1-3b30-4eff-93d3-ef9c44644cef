@@ -2,7 +2,7 @@ import { exams } from '../drizzle/schema.js';
 import { authenticateUser } from "./_apiUtils.js";
 import { neon } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-http';
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 
 export default async function handler(req, res) {
   if (req.method !== 'DELETE') {
@@ -22,8 +22,8 @@ export default async function handler(req, res) {
     const sql = neon(process.env.NEON_DB_URL);
     const db = drizzle(sql);
 
-    await db.deleteFrom(exams)
-      .where(eq(exams.id, id), eq(exams.userId, user.id));
+    await db.delete(exams)
+      .where(and(eq(exams.id, id), eq(exams.userId, user.id)));
 
     res.status(200).json({ message: 'Exam deleted' });
   } catch (error) {

@@ -15,7 +15,11 @@ export default async function handler(req, res) {
 
     const { monday, tuesday, wednesday, thursday, friday, saturday, sunday, sessionDuration } = req.body;
 
-    if (!monday || !tuesday || !wednesday || !thursday || !friday || !saturday || !sunday || !sessionDuration) {
+    if (
+      monday === undefined || tuesday === undefined || wednesday === undefined ||
+      thursday === undefined || friday === undefined || saturday === undefined ||
+      sunday === undefined || !sessionDuration
+    ) {
       return res.status(400).json({ error: 'All fields are required' });
     }
 

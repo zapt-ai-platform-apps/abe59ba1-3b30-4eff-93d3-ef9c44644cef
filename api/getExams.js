@@ -20,7 +20,7 @@ export default async function handler(req, res) {
 
     const result = await db.select()
       .from(exams)
-      .where(eq(exams.userId, user.id), gt(exams.examDate, today));
+      .where(and(eq(exams.userId, user.id), gt(exams.examDate, today)));
 
     res.status(200).json(result);
   } catch (error) {

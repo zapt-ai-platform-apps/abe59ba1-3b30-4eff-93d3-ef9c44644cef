@@ -2,7 +2,7 @@ import { exams } from '../drizzle/schema.js';
 import { authenticateUser } from "./_apiUtils.js";
 import { neon } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-http';
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 
 export default async function handler(req, res) {
   if (req.method !== 'PUT') {
@@ -29,7 +29,7 @@ export default async function handler(req, res) {
         examBoard,
         teacherName
       })
-      .where(eq(exams.id, id), eq(exams.userId, user.id))
+      .where(and(eq(exams.id, id), eq(exams.userId, user.id)))
       .returning();
 
     res.status(200).json(result[0]);

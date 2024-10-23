@@ -6,11 +6,13 @@ import AuthenticatedApp from './AuthenticatedApp';
 
 function App() {
   const [user, setUser] = createSignal(null);
+  const [currentPage, setCurrentPage] = createSignal('login');
 
   const checkUserSignedIn = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
       setUser(user);
+      setCurrentPage('homePage');
     }
   };
 
@@ -20,8 +22,10 @@ function App() {
     const authListener = supabase.auth.onAuthStateChange((_, session) => {
       if (session?.user) {
         setUser(session.user);
+        setCurrentPage('homePage');
       } else {
         setUser(null);
+        setCurrentPage('login');
       }
     });
 

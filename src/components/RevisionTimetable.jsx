@@ -1,6 +1,6 @@
 import { createMemo } from 'solid-js';
 import { For } from 'solid-js';
-import { format, eachDayOfInterval, isSameDay, getDay, addDays } from 'date-fns';
+import { format, eachDayOfInterval, isSameDay, getDay, addDays, isBefore, isAfter } from 'date-fns';
 
 export default function RevisionTimetable(props) {
   const { exams, preferences } = props;
@@ -8,27 +8,28 @@ export default function RevisionTimetable(props) {
   const timetable = createMemo(() => {
     const today = new Date();
 
-    // Compute the revision end date for each exam (exam date - 7 days)
-    const examRevisionEndDates = exams().map(exam => {
+    // Collect all dates from today to the latest exam date
+    const latestExamDate = exams().reduce((latest, exam) => {
       const examDate = new Date(exam.examDate);
-      const revisionEndDate = addDays(examDate, -7); // Subtract 7 days
-      return revisionEndDate;
-    });
-
-    // Find the latest revision end date among all exams
-    const latestRevisionEndDate = examRevisionEndDates.reduce((latest, current) => {
-      return latest > current ? latest : current;
+      return examDate > latest ? examDate : latest;
     }, today);
 
-    // Collect all dates from today to latestRevisionEndDate
-    const days = eachDayOfInterval({ start: today, end: latestRevisionEndDate });
+    const days = eachDayOfInterval({ start: today, end: latestExamDate });
 
     // Collect all available sessions
     const availableSessions = [];
 
-    days.forEach(day => {
+    days.forEach((day) => {
       const dayIndex = getDay(day); // 0 (Sunday) to 6 (Saturday)
-      const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+      const dayNames = [
+        'sunday',
+        'monday',
+        'tuesday',
+        'wednesday',
+        'thursday',
+        'friday',
+        'saturday',
+      ];
       const dayName = dayNames[dayIndex];
 
       const sessionPreference = preferences()[dayName];
@@ -42,20 +43,87 @@ export default function RevisionTimetable(props) {
       }
     });
 
-    // Get list of subjects (exam subjects)
-    const subjects = exams().map(exam => exam.subject);
+    // Prepare a map to store sessions for each subject
+    const subjectSessionsMap = {};
+
+    exams().forEach((exam) => {
+      const subject = exam.subject;
+      const examDate = new Date(exam.examDate);
+
+      // Calculate regular revision period and catch-up period
+      const catchUpStartDate = addDays(examDate, -7);
+      const revisionEndDate = addDays(examDate, -1);
+
+      subjectSessionsMap[subject] = {
+        regular: [],
+        catchUp: [],
+      };
+
+      availableSessions.forEach((session) => {
+        const sessionDate = session.date;
+
+        // Exclude sessions after exam date
+        if (isAfter(sessionDate, revisionEndDate)) {
+          return;
+        }
+
+        // Exclude sessions before today
+        if (isBefore(sessionDate, today)) {
+          return;
+        }
+
+        if (
+          isAfter(sessionDate, catchUpStartDate) &&
+          isBefore(sessionDate, examDate)
+        ) {
+          // Catch-up session
+          subjectSessionsMap[subject].catchUp.push(session);
+        } else if (isBefore(sessionDate, catchUpStartDate)) {
+          // Regular session
+          subjectSessionsMap[subject].regular.push(session);
+        }
+      });
+    });
+
+    // Distribute regular sessions equally among subjects
+    const regularSessions = [];
+    const regularSessionList = [];
+
+    Object.keys(subjectSessionsMap).forEach((subject) => {
+      regularSessions.push(...subjectSessionsMap[subject].regular);
+    });
+
+    regularSessions.sort((a, b) => a.date - b.date);
+
+    const subjects = Object.keys(subjectSessionsMap);
     const numSubjects = subjects.length;
 
-    // Assign subjects to sessions equally
-    availableSessions.forEach((session, index) => {
+    regularSessions.forEach((session, index) => {
       const subjectIndex = index % numSubjects;
-      session.subject = subjects[subjectIndex];
+      const subject = subjects[subjectIndex];
+      session.subject = subject;
+      regularSessionList.push(session);
     });
+
+    // Assign catch-up sessions
+    const catchUpSessions = [];
+
+    Object.keys(subjectSessionsMap).forEach((subject) => {
+      const catchUpList = subjectSessionsMap[subject].catchUp;
+      catchUpList.forEach((session) => {
+        session.subject = subject;
+        session.isCatchUp = true;
+        catchUpSessions.push(session);
+      });
+    });
+
+    // Combine all sessions
+    const allSessions = [...regularSessionList, ...catchUpSessions];
 
     // Group sessions by date
     const timetableMap = {};
 
-    availableSessions.forEach(session => {
+    allSessions.forEach((session) => {
       const dateKey = session.date.toDateString();
       if (!timetableMap[dateKey]) {
         timetableMap[dateKey] = { date: session.date, sessions: [] };
@@ -63,18 +131,24 @@ export default function RevisionTimetable(props) {
       timetableMap[dateKey].sessions.push(session);
     });
 
-    // Convert timetableMap to an array sorted by date
-    const timetableArray = Object.values(timetableMap).sort((a, b) => a.date - b.date);
-
     // Add exams on that date
-    timetableArray.forEach(day => {
-      const examsOnDay = exams().filter(exam => {
+    days.forEach((day) => {
+      const dateKey = day.toDateString();
+      if (!timetableMap[dateKey]) {
+        timetableMap[dateKey] = { date: day, sessions: [] };
+      }
+      const examsOnDay = exams().filter((exam) => {
         const examDate = new Date(exam.examDate);
-        return isSameDay(day.date, examDate);
+        return isSameDay(day, examDate);
       });
-      day.exams = examsOnDay;
-      day.isExamDay = examsOnDay.length > 0;
+      timetableMap[dateKey].exams = examsOnDay;
+      timetableMap[dateKey].isExamDay = examsOnDay.length > 0;
     });
+
+    // Convert timetableMap to an array sorted by date
+    const timetableArray = Object.values(timetableMap).sort(
+      (a, b) => a.date - b.date
+    );
 
     return timetableArray;
   });
@@ -86,14 +160,19 @@ export default function RevisionTimetable(props) {
         <For each={timetable()}>
           {(day) => (
             <div
-              class={`bg-white p-4 rounded-lg shadow-md ${day.isExamDay ? 'border-2 border-red-500' : ''}`}
+              class={`bg-white p-4 rounded-lg shadow-md ${
+                day.isExamDay ? 'border-2 border-red-500' : ''
+              }`}
             >
-              <p class="font-semibold text-lg text-purple-600 mb-2">{format(day.date, 'EEEE, MMMM do')}</p>
+              <p class="font-semibold text-lg text-purple-600 mb-2">
+                {format(day.date, 'EEEE, MMMM do')}
+              </p>
               {day.sessions.length > 0 ? (
                 <For each={day.sessions}>
                   {(session) => (
                     <p class="text-gray-800">
-                      {session.time}: {session.subject}
+                      {session.time}: {session.subject}{' '}
+                      {session.isCatchUp ? '(Catch-Up)' : ''}
                     </p>
                   )}
                 </For>
@@ -103,7 +182,9 @@ export default function RevisionTimetable(props) {
               <For each={day.exams}>
                 {(exam) => (
                   <div class="mt-2">
-                    <p class="text-red-600 font-semibold">Exam: {exam.subject}</p>
+                    <p class="text-red-600 font-semibold">
+                      Exam: {exam.subject}
+                    </p>
                   </div>
                 )}
               </For>

@@ -1,6 +1,6 @@
 # UpGrade
 
-UpGrade is an app designed to help students prepare for their school examinations by creating personalized revision timetables presented in a monthly calendar format. The app schedules revision sessions for each of the student's subjects equally based on available session slots and preferences.
+UpGrade is an app designed to help students prepare for their school examinations by creating personalized revision timetables presented in a monthly calendar format. The app schedules revision sessions for each of the student's subjects equally based on available session slots and preferences, ensuring efficient use of study time leading up to exams.
 
 ## Features
 
@@ -8,6 +8,7 @@ UpGrade is an app designed to help students prepare for their school examination
 - **Initial Setup**: Upon first login, set your preferred revision schedule and session duration.
 - **Exam Management**: Add, edit, and delete exams, including details like subject, date, examination board, and teacher's name.
 - **Personalized Revision Timetable**: Automatically generates a monthly calendar with scheduled revision sessions. The app distributes available revision sessions equally among all subjects, considering the period from the current date up to one week before each exam.
+- **Catch-Up Sessions**: In the week leading up to each exam, all scheduled sessions for that subject are designated as catch-up sessions, allowing students to review material they've already studied.
 - **Responsive Design**: Accessible on all devices with a user-friendly interface.
 
 ## User Journeys
@@ -76,6 +77,8 @@ UpGrade is an app designed to help students prepare for their school examination
    - The app generates a personalized revision timetable.
    - Revision sessions are scheduled equally among all your subjects.
    - The timetable considers your availability preferences and schedules sessions from the current date up to one week before each exam.
+   - **No sessions are scheduled for a subject after its exam date.**
+   - **In the week before each exam, all sessions for that subject are designated as catch-up sessions to review previously studied material.**
    - Exam dates are highlighted with a red border.
    - Each day displays the scheduled revision sessions with the subject allocated.
 3. **Detailed View**

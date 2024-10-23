@@ -2,7 +2,7 @@ import { exams } from '../drizzle/schema.js';
 import { authenticateUser } from "./_apiUtils.js";
 import { neon } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-http';
-import { eq, gt } from 'drizzle-orm';
+import { eq, gt, and } from 'drizzle-orm';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {

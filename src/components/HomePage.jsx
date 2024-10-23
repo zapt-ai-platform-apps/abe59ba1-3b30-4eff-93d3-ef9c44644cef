@@ -37,7 +37,7 @@ export default function HomePage(props) {
 
   return (
     <div class="min-h-screen bg-gradient-to-br from-purple-100 to-blue-100 p-4 text-gray-800">
-      <div class="max-w-6xl mx-auto">
+      <div class="h-full max-w-6xl mx-auto">
         <div class="flex justify-between items-center mb-8">
           <h1 class="text-4xl font-bold text-purple-600">UpGrade</h1>
           <button

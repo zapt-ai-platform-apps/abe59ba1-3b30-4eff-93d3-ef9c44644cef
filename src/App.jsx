@@ -1,4 +1,4 @@
-import { createSignal, onMount } from 'solid-js';
+import { createSignal, onMount, createEffect } from 'solid-js';
 import { supabase } from './supabaseClient';
 import { Routes, Route } from '@solidjs/router';
 import LoginPage from './components/LoginPage';
@@ -16,12 +16,18 @@ function App() {
 
   onMount(checkUserSignedIn);
 
-  supabase.auth.onAuthStateChange((_, session) => {
-    if (session?.user) {
-      setUser(session.user);
-    } else {
-      setUser(null);
-    }
+  createEffect(() => {
+    const authListener = supabase.auth.onAuthStateChange((_, session) => {
+      if (session?.user) {
+        setUser(session.user);
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => {
+      authListener.data.unsubscribe();
+    };
   });
 
   return (

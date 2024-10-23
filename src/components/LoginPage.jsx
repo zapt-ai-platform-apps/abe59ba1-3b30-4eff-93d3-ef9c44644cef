@@ -11,7 +11,7 @@ export default function LoginPage() {
           href="https://www.zapt.ai"
           target="_blank"
           rel="noopener noreferrer"
-          class="text-blue-500 hover:underline mb-6 block text-center"
+          class="text-blue-500 hover:underline mb-6 block text-center cursor-pointer"
         >
           Learn more about ZAPT
         </a>

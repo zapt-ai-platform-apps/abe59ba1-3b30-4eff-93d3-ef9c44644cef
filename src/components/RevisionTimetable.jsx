@@ -14,7 +14,8 @@ export default function RevisionTimetable(props) {
         const examDate = new Date(exam.examDate);
         return isSameDay(day, examDate);
       });
-      return { date: day, exams: examsOnDay };
+      const isExamDay = examsOnDay.length > 0;
+      return { date: day, exams: examsOnDay, isExamDay };
     });
   };
 
@@ -26,12 +27,14 @@ export default function RevisionTimetable(props) {
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <For each={timetable}>
           {(day) => (
-            <div class="bg-white p-4 rounded-lg shadow-md">
+            <div
+              class={`bg-white p-4 rounded-lg shadow-md ${day.isExamDay ? 'border-2 border-red-500' : ''}`}
+            >
               <p class="font-semibold text-lg text-purple-600 mb-2">{format(day.date, 'EEEE, MMMM do')}</p>
               <For each={day.exams}>
                 {(exam) => (
                   <div class="mb-2">
-                    <p class="text-gray-800">{exam.subject}</p>
+                    <p class="text-gray-800">Exam: {exam.subject}</p>
                   </div>
                 )}
               </For>

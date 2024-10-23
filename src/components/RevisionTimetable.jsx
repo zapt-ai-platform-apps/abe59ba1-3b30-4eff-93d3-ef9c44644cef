@@ -1,6 +1,6 @@
 import { createMemo } from 'solid-js';
 import { For } from 'solid-js';
-import { format, eachDayOfInterval, isSameDay, getDay, isAfter, subDays, isWithinInterval } from 'date-fns';
+import { format, eachDayOfInterval, isSameDay, getDay, isAfter } from 'date-fns';
 
 export default function RevisionTimetable(props) {
   const { exams, preferences } = props;
@@ -75,7 +75,7 @@ export default function RevisionTimetable(props) {
     const assignedSessions = [];
     const assignedSessionIds = new Set();
 
-    // Assign regular sessions
+    // Assign sessions equally among subjects
     availableSessions.forEach((session) => {
       const sessionId = `${session.date.toISOString()}_${session.time}`;
       if (assignedSessionIds.has(sessionId)) {
@@ -100,44 +100,20 @@ export default function RevisionTimetable(props) {
         return;
       }
 
-      // Check if the session is within one week before any exam
-      let catchUpSubject = null;
-      futureExams.forEach((exam) => {
-        const examDate = new Date(exam.examDate);
-        const oneWeekBefore = subDays(examDate, 7);
-        if (
-          isWithinInterval(session.date, { start: oneWeekBefore, end: examDate }) &&
-          session.date < examDate &&
-          session.date >= oneWeekBefore
-        ) {
-          if (isAfter(session.date, today) || isSameDay(session.date, today)) {
-            if (exam.subject in subjectSessionCounts) {
-              catchUpSubject = exam.subject;
-            }
-          }
+      // Find subject with minimal session count
+      let minCount = Infinity;
+      let selectedSubject = null;
+      validSubjects.forEach((subject) => {
+        if (subjectSessionCounts[subject] < minCount) {
+          minCount = subjectSessionCounts[subject];
+          selectedSubject = subject;
         }
       });
-
-      let selectedSubject = null;
-
-      if (catchUpSubject) {
-        selectedSubject = catchUpSubject;
-      } else {
-        // Find subject with minimal session count
-        let minCount = Infinity;
-        validSubjects.forEach((subject) => {
-          if (subjectSessionCounts[subject] < minCount) {
-            minCount = subjectSessionCounts[subject];
-            selectedSubject = subject;
-          }
-        });
-      }
 
       if (selectedSubject) {
         assignedSessions.push({
           ...session,
           subject: selectedSubject,
-          isCatchUp: selectedSubject === catchUpSubject,
         });
         assignedSessionIds.add(sessionId);
         subjectSessionCounts[selectedSubject]++;
@@ -204,10 +180,7 @@ export default function RevisionTimetable(props) {
                 <For each={day.sessions}>
                   {(session) => (
                     <p class="text-gray-800">
-                      {session.time}: {session.subject}{' '}
-                      {session.isCatchUp && (
-                        <span class="text-blue-500 font-semibold">(catch-up)</span>
-                      )}
+                      {session.time}: {session.subject}
                     </p>
                   )}
                 </For>

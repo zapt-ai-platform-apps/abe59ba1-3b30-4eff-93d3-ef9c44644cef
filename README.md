@@ -7,9 +7,8 @@ UpGrade is an app designed to help students prepare for their school examination
 - **User Authentication**: Secure login using your school email or social providers like Google, Facebook, and Apple.
 - **Initial Setup**: Upon first login, set your preferred revision schedule and session duration.
 - **Exam Management**: Add, edit, and delete exams, including details like subject, date, examination board, and teacher's name.
-- **Personalized Revision Timetable**: Automatically generates a monthly calendar with scheduled revision sessions. The app distributes available revision sessions equally among all subjects, considering the period from the current date up to one week before each exam.
-  - **Catch-Up Sessions**: In the week leading up to each exam, all scheduled sessions for that subject are designated as catch-up sessions, allowing students to review material they've already studied.
-  - **Concurrent Scheduling**: During any exam's catch-up week, the app continues to schedule regular revision sessions for other upcoming exams as per normal, ensuring continuous preparation across all subjects.
+- **Personalized Revision Timetable**: Automatically generates a monthly calendar with scheduled revision sessions. The app distributes available revision sessions equally among all subjects, considering the period from the current date up to each exam.
+  - **Concurrent Scheduling**: The app schedules regular revision sessions for all upcoming exams, ensuring continuous preparation across all subjects.
 - **Responsive Design**: Accessible on all devices with a user-friendly interface.
 - **Exclusion of Past Exams**: The timetable only displays upcoming exams and associated revision sessions. Exams that have already occurred are not shown.
 - **Accurate Session Scheduling**: Ensures that revision sessions are scheduled without duplication, providing a clear and organized timetable.
@@ -80,9 +79,8 @@ UpGrade is an app designed to help students prepare for their school examination
 2. **Understand the Schedule**
    - The app generates a personalized revision timetable.
    - Revision sessions are scheduled equally among all your subjects.
-   - The timetable considers your availability preferences and schedules sessions from the current date up to one week before each exam.
-   - **Catch-Up Sessions**: In the week before each exam, all sessions for that subject are designated as catch-up sessions to review previously studied material.
-   - **Concurrent Scheduling**: During any exam's catch-up week, regular revision sessions for other upcoming exams continue to be scheduled as normal.
+   - The timetable considers your availability preferences and schedules sessions from the current date up to each exam.
+   - **Concurrent Scheduling**: Regular revision sessions for all upcoming exams are scheduled, ensuring continuous preparation across all subjects.
    - **No sessions are scheduled for a subject after its exam date.**
    - **Only upcoming exams and revision sessions are displayed; past exams are excluded.**
    - Exam dates are highlighted with a red border.

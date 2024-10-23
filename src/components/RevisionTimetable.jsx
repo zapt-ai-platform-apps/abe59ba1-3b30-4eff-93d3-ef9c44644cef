@@ -1,6 +1,6 @@
 import { createMemo } from 'solid-js';
 import { For } from 'solid-js';
-import { format, eachDayOfInterval, isSameDay, getDay, addDays, isBefore, isAfter } from 'date-fns';
+import { format, eachDayOfInterval, isSameDay, getDay, isAfter } from 'date-fns';
 
 export default function RevisionTimetable(props) {
   const { exams, preferences } = props;
@@ -65,32 +65,7 @@ export default function RevisionTimetable(props) {
     const assignedSessions = [];
     const assignedSessionIds = new Set();
 
-    // Assign catch-up sessions first
-    futureExams.forEach((exam) => {
-      const examDate = new Date(exam.examDate);
-      const catchUpStartDate = addDays(examDate, -7);
-
-      availableSessions.forEach((session) => {
-        const sessionId = `${session.date.toISOString()}_${session.time}`;
-        if (assignedSessionIds.has(sessionId)) {
-          return;
-        }
-
-        if (
-          (isAfter(session.date, catchUpStartDate) || isSameDay(session.date, catchUpStartDate)) &&
-          isBefore(session.date, examDate)
-        ) {
-          assignedSessions.push({
-            ...session,
-            subject: exam.subject,
-            isCatchUp: true,
-          });
-          assignedSessionIds.add(sessionId);
-        }
-      });
-    });
-
-    // Now assign regular sessions
+    // Assign regular sessions
     availableSessions.forEach((session) => {
       const sessionId = `${session.date.toISOString()}_${session.time}`;
       if (assignedSessionIds.has(sessionId)) {
@@ -102,15 +77,7 @@ export default function RevisionTimetable(props) {
       const validSubjects = futureExams
         .filter((exam) => {
           const examDate = new Date(exam.examDate);
-          const catchUpStartDate = addDays(examDate, -7);
 
-          // Exclude this exam if the session is in its catch-up period
-          if (
-            (isAfter(session.date, catchUpStartDate) || isSameDay(session.date, catchUpStartDate)) &&
-            isBefore(session.date, examDate)
-          ) {
-            return false;
-          }
           // Exclude this exam if the session is on or after the exam date
           if (isAfter(session.date, examDate) || isSameDay(session.date, examDate)) {
             return false;
@@ -137,7 +104,6 @@ export default function RevisionTimetable(props) {
         assignedSessions.push({
           ...session,
           subject: selectedSubject,
-          isCatchUp: false,
         });
         assignedSessionIds.add(sessionId);
         subjectSessionCounts[selectedSubject]++;
@@ -195,8 +161,7 @@ export default function RevisionTimetable(props) {
                 <For each={day.sessions}>
                   {(session) => (
                     <p class="text-gray-800">
-                      {session.time}: {session.subject}{' '}
-                      {session.isCatchUp ? '(Catch-Up)' : ''}
+                      {session.time}: {session.subject}
                     </p>
                   )}
                 </For>

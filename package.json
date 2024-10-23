@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "solid-js": "^1.8.22",
-    "@solidjs/router": "^0.8.5",
+    "@solidjs/router": "^0.8.4",
     "drizzle-orm": "^0.33.0",
     "@neondatabase/serverless": "^0.9.5",
     "@supabase/auth-ui-shared": "^0.1.8",

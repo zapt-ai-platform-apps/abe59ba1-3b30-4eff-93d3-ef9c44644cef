@@ -2,7 +2,7 @@ import { createSignal, onMount, createEffect, For, Show } from 'solid-js';
 import { supabase } from './supabaseClient';
 import { Auth } from '@supabase/auth-ui-solid';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
-import { format, addDays, isSameDay } from 'date-fns';
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, subDays } from 'date-fns';
 
 function App() {
   const [user, setUser] = createSignal(null);
@@ -15,6 +15,7 @@ function App() {
     teacherName: ''
   });
   const [loading, setLoading] = createSignal(false);
+  const [timetable, setTimetable] = createSignal([]);
 
   const checkUserSignedIn = async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -59,6 +60,7 @@ function App() {
     if (response.ok) {
       const data = await response.json();
       setExams(data);
+      generateRevisionTimetable(data);
     } else {
       console.error('Error fetching exams:', response.statusText);
     }
@@ -87,6 +89,7 @@ function App() {
           examBoard: '',
           teacherName: ''
         });
+        generateRevisionTimetable([...exams(), savedExam]);
       } else {
         console.error('Error saving exam');
       }
@@ -101,24 +104,38 @@ function App() {
     fetchExams();
   });
 
-  const generateRevisionTimetable = () => {
-    const timetable = [];
-    const today = new Date();
-    const daysAhead = 30;
-    for (let i = 0; i < daysAhead; i++) {
-      const day = addDays(today, i);
-      const examsOnDay = exams().filter(exam => {
-        const examDate = new Date(exam.examDate);
-        return isSameDay(day, examDate);
-      });
-      if (examsOnDay.length > 0) {
-        timetable.push({ date: day, exams: examsOnDay });
+  const generateRevisionTimetable = (examsData) => {
+    const timetableData = {};
+    examsData.forEach((exam) => {
+      const examDate = new Date(exam.examDate);
+      for (let i = 7; i >= 1; i--) {
+        const revisionDate = subDays(examDate, i);
+        const dateKey = format(revisionDate, 'yyyy-MM-dd');
+        if (!timetableData[dateKey]) {
+          timetableData[dateKey] = [];
+        }
+        timetableData[dateKey].push({
+          type: 'revision',
+          subject: exam.subject
+        });
       }
-    }
-    return timetable;
+      const examDateKey = format(examDate, 'yyyy-MM-dd');
+      if (!timetableData[examDateKey]) {
+        timetableData[examDateKey] = [];
+      }
+      timetableData[examDateKey].push({
+        type: 'exam',
+        subject: exam.subject
+      });
+    });
+    setTimetable(timetableData);
   };
 
-  const revisionTimetable = generateRevisionTimetable();
+  const currentMonth = new Date();
+  const daysInMonth = eachDayOfInterval({
+    start: startOfMonth(currentMonth),
+    end: endOfMonth(currentMonth)
+  });
 
   return (
     <div class="min-h-screen bg-gradient-to-br from-purple-100 to-blue-100 p-4 text-gray-800">
@@ -228,20 +245,34 @@ function App() {
 
           <div class="mt-8">
             <h2 class="text-2xl font-bold mb-4 text-purple-600">Revision Timetable</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <For each={revisionTimetable}>
+            <div class="grid grid-cols-7 gap-2">
+              <For each={['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']}>
                 {(day) => (
-                  <div class="bg-white p-4 rounded-lg shadow-md">
-                    <p class="font-semibold text-lg text-purple-600 mb-2">{format(day.date, 'PPP')}</p>
-                    <For each={day.exams}>
-                      {(exam) => (
-                        <div class="mb-2">
-                          <p class="text-gray-800">{exam.subject}</p>
-                        </div>
-                      )}
-                    </For>
-                  </div>
+                  <div class="text-center font-semibold">{day}</div>
                 )}
+              </For>
+              <For each={daysInMonth}>
+                {(day) => {
+                  const dateKey = format(day, 'yyyy-MM-dd');
+                  const dayEvents = timetable()[dateKey] || [];
+                  return (
+                    <div class="p-2 border border-gray-300 rounded-lg h-24 flex flex-col">
+                      <div class="text-sm font-semibold mb-1">{format(day, 'd')}</div>
+                      <For each={dayEvents}>
+                        {(event) => (
+                          <div
+                            class={`text-xs rounded px-1 mb-1 ${
+                              event.type === 'exam' ? 'bg-red-200 text-red-800' : 'bg-green-200 text-green-800'
+                            }`}
+                          >
+                            {event.type === 'exam' ? 'Exam: ' : 'Revise: '}
+                            {event.subject}
+                          </div>
+                        )}
+                      </For>
+                    </div>
+                  );
+                }}
               </For>
             </div>
           </div>

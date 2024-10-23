@@ -1,13 +1,13 @@
 # UpGrade
 
-UpGrade is an app designed to help students prepare for their school examinations by creating personalized revision timetables presented in a monthly calendar format.
+UpGrade is an app designed to help students prepare for their school examinations by creating personalized revision timetables presented in a monthly calendar format. The app schedules revision sessions for each of the student's subjects equally based on available session slots and preferences.
 
 ## Features
 
 - **User Authentication**: Secure login using your school email or social providers like Google, Facebook, and Apple.
 - **Initial Setup**: Upon first login, set your preferred revision schedule and session duration.
 - **Exam Management**: Add, edit, and delete exams, including details like subject, date, examination board, and teacher's name.
-- **Personalized Revision Timetable**: Automatically generates a monthly calendar with scheduled revision sessions based on your preferences and upcoming exams.
+- **Personalized Revision Timetable**: Automatically generates a monthly calendar with scheduled revision sessions. The app distributes available revision sessions equally among all subjects, considering the period from the current date up to one week before each exam.
 - **Responsive Design**: Accessible on all devices with a user-friendly interface.
 
 ## User Journeys
@@ -73,9 +73,11 @@ UpGrade is an app designed to help students prepare for their school examination
 1. **Access Timetable**
    - Scroll down to the "Revision Timetable" section.
 2. **Understand the Schedule**
-   - See a monthly calendar view with each day showing scheduled revision sessions based on your preferences.
+   - The app generates a personalized revision timetable.
+   - Revision sessions are scheduled equally among all your subjects.
+   - The timetable considers your availability preferences and schedules sessions from the current date up to one week before each exam.
    - Exam dates are highlighted with a red border.
-   - Each day displays whether a revision session is scheduled (Morning, Afternoon, Both, or None).
+   - Each day displays the scheduled revision sessions with the subject allocated.
 3. **Detailed View**
    - Click on a date to view detailed revision tasks (Future Functionality).
 

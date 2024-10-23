@@ -5,7 +5,7 @@ import ExamList from './ExamList';
 import RevisionTimetable from './RevisionTimetable';
 
 export default function HomePage(props) {
-  const { user } = props;
+  const { user, preferences } = props;
 
   const [exams, setExams] = createSignal([]);
   const [loading, setLoading] = createSignal(false);
@@ -53,7 +53,7 @@ export default function HomePage(props) {
           <ExamList exams={exams} loading={loading} />
         </div>
 
-        <RevisionTimetable exams={exams} />
+        <RevisionTimetable exams={exams} preferences={preferences} />
       </div>
     </div>
   );

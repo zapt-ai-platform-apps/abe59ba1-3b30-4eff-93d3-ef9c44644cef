@@ -1,8 +1,8 @@
 import { For } from 'solid-js';
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay } from 'date-fns';
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, getDay } from 'date-fns';
 
 export default function RevisionTimetable(props) {
-  const { exams } = props;
+  const { exams, preferences } = props;
 
   const generateTimetable = () => {
     const today = new Date();
@@ -15,7 +15,13 @@ export default function RevisionTimetable(props) {
         return isSameDay(day, examDate);
       });
       const isExamDay = examsOnDay.length > 0;
-      return { date: day, exams: examsOnDay, isExamDay };
+
+      const dayIndex = getDay(day);
+      const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+      const dayName = dayNames[dayIndex];
+      const sessionPreference = preferences()[dayName];
+
+      return { date: day, exams: examsOnDay, isExamDay, sessionPreference };
     });
   };
 
@@ -31,9 +37,16 @@ export default function RevisionTimetable(props) {
               class={`bg-white p-4 rounded-lg shadow-md ${day.isExamDay ? 'border-2 border-red-500' : ''}`}
             >
               <p class="font-semibold text-lg text-purple-600 mb-2">{format(day.date, 'EEEE, MMMM do')}</p>
+              {day.sessionPreference !== 'none' ? (
+                <p class="text-gray-800">
+                  Revision Session: {day.sessionPreference.charAt(0).toUpperCase() + day.sessionPreference.slice(1)}
+                </p>
+              ) : (
+                <p class="text-gray-800">No revision session scheduled.</p>
+              )}
               <For each={day.exams}>
                 {(exam) => (
-                  <div class="mb-2">
+                  <div class="mt-2">
                     <p class="text-gray-800">Exam: {exam.subject}</p>
                   </div>
                 )}

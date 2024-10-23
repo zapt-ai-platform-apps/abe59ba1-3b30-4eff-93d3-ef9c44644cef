@@ -2,7 +2,7 @@ import { createSignal, onMount, createEffect } from 'solid-js';
 import { supabase } from './supabaseClient';
 import { Routes, Route } from '@solidjs/router';
 import LoginPage from './components/LoginPage';
-import HomePage from './components/HomePage';
+import AuthenticatedApp from './AuthenticatedApp';
 
 function App() {
   const [user, setUser] = createSignal(null);
@@ -32,7 +32,7 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={user() ? <HomePage user={user} /> : <LoginPage />} />
+      <Route path="/" element={user() ? <AuthenticatedApp user={user} /> : <LoginPage />} />
     </Routes>
   );
 }

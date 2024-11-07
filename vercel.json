@@ -11,9 +11,7 @@
   ],
   "functions": {
     "api/*.js": {
-      "includeFiles": [
-        "drizzle/**"
-      ]
+      "includeFiles": "drizzle/**"
     }
   }
 }

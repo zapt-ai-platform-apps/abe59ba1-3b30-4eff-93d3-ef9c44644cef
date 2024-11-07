@@ -72,12 +72,12 @@ export default function HomePage(props) {
 
         <Show when={!editingPreferences()} fallback={
           <PreferencesForm
-            fetchPreferences={fetchPreferences}
-            preferences={userPreferences()}
-            onCancel={() => {
-              setEditingPreferences(false);
+            fetchPreferences={() => {
               fetchPreferences();
+              setEditingPreferences(false);
             }}
+            preferences={userPreferences()}
+            onCancel={() => setEditingPreferences(false)}
           />
         }>
           <div class="flex justify-end mb-4">

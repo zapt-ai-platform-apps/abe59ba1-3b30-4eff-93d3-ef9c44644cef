@@ -45,7 +45,7 @@ export default async function handler(req, res) {
         saturday,
         sunday,
         sessionDuration: parseInt(sessionDuration, 10),
-      }).returning();
+      });
     }
 
     res.status(200).json({ message: 'Preferences saved' });

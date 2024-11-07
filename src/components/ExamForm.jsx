@@ -1,8 +1,8 @@
-import { createSignal, createEffect, Show } from 'solid-js';
+import { createSignal, Show } from 'solid-js';
 import { supabase } from '../supabaseClient';
 
 export default function ExamForm(props) {
-  const { fetchExams, exam, onCancel } = props;
+  const { fetchExams, exam = null, onCancel = null } = props;
 
   const [examData, setExamData] = createSignal({
     id: exam?.id || null,

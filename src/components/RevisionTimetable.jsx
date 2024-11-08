@@ -1,30 +1,42 @@
 import { createMemo } from 'solid-js';
 import { For } from 'solid-js';
-import { format, eachDayOfInterval, isSameDay, getDay, isAfter } from 'date-fns';
+import {
+  format,
+  eachDayOfInterval,
+  isSameDay,
+  getDay,
+  isAfter,
+  isBefore,
+  parseISO,
+} from 'date-fns';
 
 export default function RevisionTimetable(props) {
   const { exams, preferences } = props;
 
   const timetable = createMemo(() => {
     const today = new Date();
+    const startDate = preferences()?.startDate ? parseISO(preferences().startDate) : today;
+
+    // Use the later of today or startDate to ensure we don't generate sessions in the past
+    const revisionStartDate = isAfter(startDate, today) ? startDate : today;
 
     // Filter out exams that have already passed
     const futureExams = exams().filter((exam) => {
       const examDate = new Date(exam.examDate);
-      return isAfter(examDate, today) || isSameDay(examDate, today);
+      return isAfter(examDate, revisionStartDate) || isSameDay(examDate, revisionStartDate);
     });
 
     if (futureExams.length === 0) {
       return [];
     }
 
-    // Collect all dates from today to the latest exam date
+    // Collect all dates from revisionStartDate to the latest exam date
     const latestExamDate = futureExams.reduce((latest, exam) => {
       const examDate = new Date(exam.examDate);
       return examDate > latest ? examDate : latest;
-    }, today);
+    }, revisionStartDate);
 
-    const days = eachDayOfInterval({ start: today, end: latestExamDate });
+    const days = eachDayOfInterval({ start: revisionStartDate, end: latestExamDate });
 
     // Create a Set of exam dates for quick lookup
     const examDatesSet = new Set(futureExams.map((exam) => new Date(exam.examDate).toDateString()));
@@ -146,9 +158,7 @@ export default function RevisionTimetable(props) {
     });
 
     // Convert timetableMap to an array sorted by date
-    const timetableArray = Object.values(timetableMap).sort(
-      (a, b) => a.date - b.date
-    );
+    const timetableArray = Object.values(timetableMap).sort((a, b) => a.date - b.date);
 
     return timetableArray;
   });
@@ -170,9 +180,7 @@ export default function RevisionTimetable(props) {
               <For each={day.exams}>
                 {(exam) => (
                   <div class="mt-2">
-                    <p class="text-red-600 font-semibold">
-                      Exam: {exam.subject}
-                    </p>
+                    <p class="text-red-600 font-semibold">Exam: {exam.subject}</p>
                   </div>
                 )}
               </For>

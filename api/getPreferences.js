@@ -16,7 +16,8 @@ export default async function handler(req, res) {
     const sql = neon(process.env.NEON_DB_URL);
     const db = drizzle(sql);
 
-    const result = await db.select()
+    const result = await db
+      .select()
       .from(userPreferences)
       .where(eq(userPreferences.userId, user.id));
 

@@ -13,12 +13,27 @@ export default async function handler(req, res) {
   try {
     const user = await authenticateUser(req);
 
-    const { monday, tuesday, wednesday, thursday, friday, saturday, sunday, sessionDuration } = req.body;
+    const {
+      monday,
+      tuesday,
+      wednesday,
+      thursday,
+      friday,
+      saturday,
+      sunday,
+      sessionDuration,
+      startDate, // Get startDate from request body
+    } = req.body;
 
     if (
-      monday === undefined || tuesday === undefined || wednesday === undefined ||
-      thursday === undefined || friday === undefined || saturday === undefined ||
-      sunday === undefined || !sessionDuration
+      monday === undefined ||
+      tuesday === undefined ||
+      wednesday === undefined ||
+      thursday === undefined ||
+      friday === undefined ||
+      saturday === undefined ||
+      sunday === undefined ||
+      !sessionDuration
     ) {
       return res.status(400).json({ error: 'All fields are required' });
     }
@@ -28,23 +43,27 @@ export default async function handler(req, res) {
 
     const existing = await db.select().from(userPreferences).where(eq(userPreferences.userId, user.id));
 
+    const preferencesData = {
+      monday,
+      tuesday,
+      wednesday,
+      thursday,
+      friday,
+      saturday,
+      sunday,
+      sessionDuration: parseInt(sessionDuration, 10),
+      startDate: startDate ? new Date(startDate) : null, // Handle startDate
+    };
+
     if (existing.length > 0) {
-      await db.update(userPreferences)
-        .set({
-          monday, tuesday, wednesday, thursday, friday, saturday, sunday, sessionDuration: parseInt(sessionDuration, 10),
-        })
+      await db
+        .update(userPreferences)
+        .set(preferencesData)
         .where(eq(userPreferences.userId, user.id));
     } else {
       await db.insert(userPreferences).values({
         userId: user.id,
-        monday,
-        tuesday,
-        wednesday,
-        thursday,
-        friday,
-        saturday,
-        sunday,
-        sessionDuration: parseInt(sessionDuration, 10),
+        ...preferencesData,
       });
     }
 

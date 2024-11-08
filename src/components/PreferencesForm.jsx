@@ -13,6 +13,7 @@ export default function PreferencesForm(props) {
     saturday: existingPreferences?.saturday || 'none',
     sunday: existingPreferences?.sunday || 'none',
     sessionDuration: existingPreferences?.sessionDuration || 30,
+    startDate: existingPreferences?.startDate ? existingPreferences.startDate.split('T')[0] : '', // Handle startDate
   });
 
   const [loading, setLoading] = createSignal(false);
@@ -80,6 +81,16 @@ export default function PreferencesForm(props) {
               value={preferences().sessionDuration}
               onInput={(e) => setPreferences({ ...preferences(), sessionDuration: e.target.value })}
               class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 box-border"
+            />
+          </div>
+          <div>
+            <label class="font-semibold mb-2 block">Revision Start Date</label>
+            <input
+              type="date"
+              value={preferences().startDate}
+              onInput={(e) => setPreferences({ ...preferences(), startDate: e.target.value })}
+              class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 box-border"
+              required
             />
           </div>
           <div class="flex space-x-4">

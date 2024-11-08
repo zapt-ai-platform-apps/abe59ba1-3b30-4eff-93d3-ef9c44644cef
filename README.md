@@ -5,13 +5,14 @@ UpGrade is an app designed to help students prepare for their school examination
 ## Features
 
 - **User Authentication**: Secure login using your school email or social providers like Google, Facebook, and Apple.
-- **Initial Setup**: Upon first login, set your preferred revision schedule and session duration.
+- **Initial Setup**: Upon first login, set your preferred revision schedule, session duration, and start date for your revision.
 - **Exam Management**:
   - **Add Exams**: Enter details like subject, date, examination board, and teacher's name.
   - **Edit Exams**: Modify existing exams to update any details.
   - **Delete Exams**: Remove exams that are no longer relevant.
-- **Preference Management**: Edit your revision schedule preferences and session durations at any time.
-- **Personalized Revision Timetable**: Automatically generates a monthly calendar with scheduled revision sessions. The app distributes available revision sessions equally among all subjects, considering the period from the current date up to each exam.
+- **Preference Management**: Edit your revision schedule preferences, session durations, and start date at any time.
+- **Personalized Revision Timetable**: Automatically generates a monthly calendar with scheduled revision sessions starting from your selected start date. The app distributes available revision sessions equally among all subjects, considering the period from the start date up to each exam.
+  - **Custom Start Date**: Begin your revision timetable from a date of your choosing, allowing flexibility in planning.
   - **Concurrent Scheduling**: The app schedules regular revision sessions for all upcoming exams, ensuring continuous preparation across all subjects.
   - **Consistent Scheduling Before Exams**:
     - Revision sessions in the week before an exam are sequenced the same as any other week, rather than focusing solely on that exam.
@@ -52,7 +53,10 @@ UpGrade is an app designed to help students prepare for their school examination
 2. **Set Session Duration**
    - Select how long each revision session should last.
    - Choose a duration between a minimum of **30 minutes** and a maximum of **2 hours**, in 15-minute increments.
-3. **Save Preferences**
+3. **Select Start Date**
+   - Choose the date from which you want to begin your revision timetable.
+   - This allows you to plan ahead and start revision on a future date if desired.
+4. **Save Preferences**
    - Click on "Save Preferences" to save your settings.
    - A loading state indicates the saving process.
    - Upon success, you're directed to the home page.
@@ -92,7 +96,7 @@ UpGrade is an app designed to help students prepare for their school examination
 1. **Access Preferences**
    - On the home page, click on the "Edit Preferences" button.
 2. **Modify Preferences**
-   - Change your revision schedule for each day and the session duration.
+   - Change your revision schedule for each day, the session duration, and the start date.
 3. **Save Preferences**
    - Click on "Save Preferences" to update your settings.
    - A loading state indicates the saving process.
@@ -103,9 +107,9 @@ UpGrade is an app designed to help students prepare for their school examination
 1. **Access Timetable**
    - Scroll down to the "Revision Timetable" section.
 2. **Understand the Schedule**
-   - The app generates a personalized revision timetable.
+   - The app generates a personalized revision timetable starting from your selected start date.
    - Revision sessions are scheduled equally among all your subjects.
-   - The timetable considers your availability preferences and schedules sessions from the current date up to each exam.
+   - The timetable considers your availability preferences and schedules sessions from the start date up to each exam.
    - **Consistent Scheduling Before Exams**:
      - In the week before each exam, sessions are sequenced as in any other week, without focusing solely on the exam subject.
    - **Concurrent Scheduling**: Regular revision sessions for all upcoming exams are scheduled, ensuring continuous preparation across all subjects.

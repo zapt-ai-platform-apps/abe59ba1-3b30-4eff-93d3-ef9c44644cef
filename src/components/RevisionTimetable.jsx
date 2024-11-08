@@ -95,60 +95,61 @@ export default function RevisionTimetable(props) {
     const assignedSessions = [];
     const assignedSessionIds = new Set();
 
-    // Prepare priority sessions for days before multi-exam days
-    const prioritySessions = [];
-    const normalSessions = [];
-
+    // Map sessions by date
+    const sessionsByDate = new Map();
     availableSessions.forEach((session) => {
-      const nextDay = addDays(session.date, 1);
-      const nextDayStr = nextDay.toDateString();
+      const dateStr = session.date.toDateString();
+      if (!sessionsByDate.has(dateStr)) {
+        sessionsByDate.set(dateStr, []);
+      }
+      sessionsByDate.get(dateStr).push(session);
+    });
 
-      // Check if the next day has two or more exams
-      if (examDateMap[nextDayStr] && examDateMap[nextDayStr].length >= 2) {
-        prioritySessions.push({ session, examsOnNextDay: examDateMap[nextDayStr] });
-      } else {
-        normalSessions.push(session);
+    // Assign at least one session to exam subjects on the day before the exam
+    futureExams.forEach((exam) => {
+      const examDate = new Date(exam.examDate);
+      const previousDay = subDays(examDate, 1);
+      if (isBefore(previousDay, revisionStartDate)) return;
+
+      const dateStr = previousDay.toDateString();
+
+      if (sessionsByDate.has(dateStr)) {
+        const sessions = sessionsByDate.get(dateStr);
+        for (const session of sessions) {
+          const sessionId = `${session.date.toISOString()}_${session.time}`;
+
+          // If session already assigned, skip
+          if (assignedSessionIds.has(sessionId)) {
+            continue;
+          }
+
+          // If we have already assigned a session to this subject on this date, skip
+          if (assignedSessions.some(s => s.date.getTime() === session.date.getTime() && s.subject === exam.subject)) {
+            continue;
+          }
+
+          assignedSessions.push({
+            ...session,
+            subject: exam.subject,
+          });
+          assignedSessionIds.add(sessionId);
+          subjectSessionCounts[exam.subject] = (subjectSessionCounts[exam.subject] || 0) + 1;
+
+          // We only need to assign at least one session for this subject on previous day
+          break;
+        }
       }
     });
 
-    // Assign priority sessions first
-    prioritySessions.forEach(({ session, examsOnNextDay }) => {
+    // Collect unassigned sessions
+    const unassignedSessions = availableSessions.filter(session => {
       const sessionId = `${session.date.toISOString()}_${session.time}`;
-      if (assignedSessionIds.has(sessionId)) {
-        // Session already assigned
-        return;
-      }
-
-      // Assign exams scheduled for the next day
-      const subjectsToAssign = examsOnNextDay.map((exam) => exam.subject);
-
-      // Filter out subjects that have already been assigned in this session
-      const unassignedSubjects = subjectsToAssign.filter(
-        (subject) => !assignedSessions.some((s) => s.date.getTime() === session.date.getTime() && s.subject === subject)
-      );
-
-      if (unassignedSubjects.length === 0) {
-        return;
-      }
-
-      // Assign the first unassigned subject to this session
-      const selectedSubject = unassignedSubjects[0];
-
-      assignedSessions.push({
-        ...session,
-        subject: selectedSubject,
-      });
-      assignedSessionIds.add(sessionId);
-      subjectSessionCounts[selectedSubject] = (subjectSessionCounts[selectedSubject] || 0) + 1;
+      return !assignedSessionIds.has(sessionId);
     });
 
     // Assign remaining sessions equally among subjects
-    normalSessions.forEach((session) => {
+    unassignedSessions.forEach((session) => {
       const sessionId = `${session.date.toISOString()}_${session.time}`;
-      if (assignedSessionIds.has(sessionId)) {
-        // Session already assigned
-        return;
-      }
 
       // Determine valid subjects for this session
       const validSubjects = futureExams

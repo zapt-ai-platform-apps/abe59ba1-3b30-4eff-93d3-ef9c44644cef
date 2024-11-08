@@ -21,5 +21,5 @@ export const userPreferences = pgTable('user_preferences', {
   saturday: text('saturday').notNull(),
   sunday: text('sunday').notNull(),
   sessionDuration: integer('session_duration').notNull(),
-  startDate: date('start_date'), // New field for revision start date
+  startDate: date('start_date'),
 });

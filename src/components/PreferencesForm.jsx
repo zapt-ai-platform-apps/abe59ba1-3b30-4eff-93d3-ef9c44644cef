@@ -13,7 +13,7 @@ export default function PreferencesForm(props) {
     saturday: existingPreferences?.saturday || 'none',
     sunday: existingPreferences?.sunday || 'none',
     sessionDuration: existingPreferences?.sessionDuration || 30,
-    startDate: existingPreferences?.startDate ? existingPreferences.startDate.split('T')[0] : '', // Handle startDate
+    startDate: existingPreferences?.startDate ? existingPreferences.startDate.split('T')[0] : '',
   });
 
   const [loading, setLoading] = createSignal(false);

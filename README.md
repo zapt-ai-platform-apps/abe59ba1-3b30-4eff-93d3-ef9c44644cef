@@ -16,8 +16,9 @@ UpGrade is an app designed to help students prepare for their school examination
   - **Concurrent Scheduling**: The app schedules regular revision sessions for all upcoming exams, ensuring continuous preparation across all subjects.
   - **Consistent Scheduling Before Exams**:
     - Revision sessions in the week before an exam are sequenced the same as any other week, rather than focusing solely on that exam.
-  - **Special Scheduling for Multiple Exams on the Same Day**:
-    - **If a day has two exams scheduled, the day before will have revision sessions for both exams**, ensuring adequate preparation for both subjects.
+  - **Special Scheduling Before Exams**:
+    - **If a day has one or more exams scheduled, the day before will have at least one revision session for each exam**, ensuring dedicated preparation time.
+    - The app prioritizes assigning available revision sessions on the day before to the subjects of the upcoming exams.
   - **Exclusion of Exam Dates**: Revision sessions are **not scheduled on the dates of exams**, allowing students to focus on their tests without additional study sessions.
   - **No Sessions After Exam Dates**: Revision sessions are **not scheduled on or after** the exam date for a subject.
 - **Responsive Design**: Accessible on all devices with a user-friendly interface.
@@ -112,12 +113,10 @@ UpGrade is an app designed to help students prepare for their school examination
    - The app generates a personalized revision timetable starting from your selected start date.
    - Revision sessions are scheduled equally among all your subjects.
    - The timetable considers your availability preferences and schedules sessions from the start date up to each exam.
-   - **Consistent Scheduling Before Exams**:
-     - In the week before each exam, sessions are sequenced as in any other week, without focusing solely on the exam subject.
-   - **Special Scheduling for Multiple Exams on the Same Day**:
-     - **If a day has two exams scheduled, the day before will have revision sessions for both exams**, ensuring you have dedicated time to prepare for both subjects.
+   - **Special Scheduling Before Exams**:
+     - If a day has one or more exams scheduled, the **day before will have at least one revision session for each exam**, ensuring you have dedicated time to prepare for each subject.
      - The app prioritizes assigning available revision sessions on the day before to the subjects of the upcoming exams.
-   - **Concurrent Scheduling**: Regular revision sessions for all upcoming exams are scheduled, ensuring continuous preparation across all subjects.
+   - **Consistent Scheduling**: Regular revision sessions for all upcoming exams are scheduled, ensuring continuous preparation across all subjects.
    - **No sessions are scheduled for a subject on or after its exam date.**
    - **No revision sessions are scheduled on exam dates, allowing you to focus on your exams.**
    - **Exam Dates**: Exam days are highlighted with a red border.
@@ -146,6 +145,8 @@ The app requires the following environment variables:
 
 - `VITE_PUBLIC_APP_ID`: Your Supabase project URL.
 - `NEON_DB_URL`: Connection string for the Neon Postgres database.
+- `VITE_PUBLIC_SENTRY_DSN`: Your Sentry Data Source Name for error logging.
+- `VITE_PUBLIC_APP_ENV`: The environment name (e.g., development, production).
 
 Ensure these variables are set in your environment to run the app successfully.
 
@@ -154,6 +155,8 @@ Create a `.env` file in the root directory of your project and add the following
 ```
 VITE_PUBLIC_APP_ID=your_supabase_project_url
 NEON_DB_URL=your_neon_db_url_here
+VITE_PUBLIC_SENTRY_DSN=your_sentry_dsn_here
+VITE_PUBLIC_APP_ENV=development
 ```
 
 **Note:** Remember to set these environment variables when deploying to platforms like Vercel.

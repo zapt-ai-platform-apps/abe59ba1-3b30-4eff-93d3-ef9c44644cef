@@ -16,6 +16,8 @@ UpGrade is an app designed to help students prepare for their school examination
   - **Concurrent Scheduling**: The app schedules regular revision sessions for all upcoming exams, ensuring continuous preparation across all subjects.
   - **Consistent Scheduling Before Exams**:
     - Revision sessions in the week before an exam are sequenced the same as any other week, rather than focusing solely on that exam.
+  - **Special Scheduling for Multiple Exams on the Same Day**:
+    - **If a day has two exams scheduled, the day before will have revision sessions for both exams**, ensuring adequate preparation for both subjects.
   - **Exclusion of Exam Dates**: Revision sessions are **not scheduled on the dates of exams**, allowing students to focus on their tests without additional study sessions.
   - **No Sessions After Exam Dates**: Revision sessions are **not scheduled on or after** the exam date for a subject.
 - **Responsive Design**: Accessible on all devices with a user-friendly interface.
@@ -112,6 +114,9 @@ UpGrade is an app designed to help students prepare for their school examination
    - The timetable considers your availability preferences and schedules sessions from the start date up to each exam.
    - **Consistent Scheduling Before Exams**:
      - In the week before each exam, sessions are sequenced as in any other week, without focusing solely on the exam subject.
+   - **Special Scheduling for Multiple Exams on the Same Day**:
+     - **If a day has two exams scheduled, the day before will have revision sessions for both exams**, ensuring you have dedicated time to prepare for both subjects.
+     - The app prioritizes assigning available revision sessions on the day before to the subjects of the upcoming exams.
    - **Concurrent Scheduling**: Regular revision sessions for all upcoming exams are scheduled, ensuring continuous preparation across all subjects.
    - **No sessions are scheduled for a subject on or after its exam date.**
    - **No revision sessions are scheduled on exam dates, allowing you to focus on your exams.**

@@ -8,6 +8,8 @@ import {
   isAfter,
   isBefore,
   parseISO,
+  addDays,
+  subDays,
 } from 'date-fns';
 
 export default function RevisionTimetable(props) {
@@ -17,7 +19,6 @@ export default function RevisionTimetable(props) {
     const today = new Date();
     const startDate = preferences()?.startDate ? parseISO(preferences().startDate) : today;
 
-    // Use the later of today or startDate to ensure we don't generate sessions in the past
     const revisionStartDate = isAfter(startDate, today) ? startDate : today;
 
     // Filter out exams that have already passed
@@ -38,8 +39,15 @@ export default function RevisionTimetable(props) {
 
     const days = eachDayOfInterval({ start: revisionStartDate, end: latestExamDate });
 
-    // Create a Set of exam dates for quick lookup
-    const examDatesSet = new Set(futureExams.map((exam) => new Date(exam.examDate).toDateString()));
+    // Create a map of exam dates to exams
+    const examDateMap = {};
+    futureExams.forEach((exam) => {
+      const examDateStr = new Date(exam.examDate).toDateString();
+      if (!examDateMap[examDateStr]) {
+        examDateMap[examDateStr] = [];
+      }
+      examDateMap[examDateStr].push(exam);
+    });
 
     // Collect all available sessions
     const availableSessions = [];
@@ -48,7 +56,7 @@ export default function RevisionTimetable(props) {
       const dayKey = day.toDateString();
 
       // Skip if the day is an exam day
-      if (examDatesSet.has(dayKey)) {
+      if (examDateMap[dayKey]) {
         return;
       }
 
@@ -87,8 +95,55 @@ export default function RevisionTimetable(props) {
     const assignedSessions = [];
     const assignedSessionIds = new Set();
 
-    // Assign sessions equally among subjects
+    // Prepare priority sessions for days before multi-exam days
+    const prioritySessions = [];
+    const normalSessions = [];
+
     availableSessions.forEach((session) => {
+      const nextDay = addDays(session.date, 1);
+      const nextDayStr = nextDay.toDateString();
+
+      // Check if the next day has two or more exams
+      if (examDateMap[nextDayStr] && examDateMap[nextDayStr].length >= 2) {
+        prioritySessions.push({ session, examsOnNextDay: examDateMap[nextDayStr] });
+      } else {
+        normalSessions.push(session);
+      }
+    });
+
+    // Assign priority sessions first
+    prioritySessions.forEach(({ session, examsOnNextDay }) => {
+      const sessionId = `${session.date.toISOString()}_${session.time}`;
+      if (assignedSessionIds.has(sessionId)) {
+        // Session already assigned
+        return;
+      }
+
+      // Assign exams scheduled for the next day
+      const subjectsToAssign = examsOnNextDay.map((exam) => exam.subject);
+
+      // Filter out subjects that have already been assigned in this session
+      const unassignedSubjects = subjectsToAssign.filter(
+        (subject) => !assignedSessions.some((s) => s.date.getTime() === session.date.getTime() && s.subject === subject)
+      );
+
+      if (unassignedSubjects.length === 0) {
+        return;
+      }
+
+      // Assign the first unassigned subject to this session
+      const selectedSubject = unassignedSubjects[0];
+
+      assignedSessions.push({
+        ...session,
+        subject: selectedSubject,
+      });
+      assignedSessionIds.add(sessionId);
+      subjectSessionCounts[selectedSubject] = (subjectSessionCounts[selectedSubject] || 0) + 1;
+    });
+
+    // Assign remaining sessions equally among subjects
+    normalSessions.forEach((session) => {
       const sessionId = `${session.date.toISOString()}_${session.time}`;
       if (assignedSessionIds.has(sessionId)) {
         // Session already assigned
@@ -116,8 +171,8 @@ export default function RevisionTimetable(props) {
       let minCount = Infinity;
       let selectedSubject = null;
       validSubjects.forEach((subject) => {
-        if (subjectSessionCounts[subject] < minCount) {
-          minCount = subjectSessionCounts[subject];
+        if ((subjectSessionCounts[subject] || 0) < minCount) {
+          minCount = subjectSessionCounts[subject] || 0;
           selectedSubject = subject;
         }
       });
@@ -128,7 +183,7 @@ export default function RevisionTimetable(props) {
           subject: selectedSubject,
         });
         assignedSessionIds.add(sessionId);
-        subjectSessionCounts[selectedSubject]++;
+        subjectSessionCounts[selectedSubject] = (subjectSessionCounts[selectedSubject] || 0) + 1;
       }
     });
 

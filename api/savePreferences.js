@@ -27,26 +27,15 @@ export default async function handler(req, res) {
     const user = await authenticateUser(req);
 
     const {
-      monday,
-      tuesday,
-      wednesday,
-      thursday,
-      friday,
-      saturday,
-      sunday,
+      availability,
       sessionDuration,
       startDate,
     } = req.body;
 
     if (
-      monday === undefined ||
-      tuesday === undefined ||
-      wednesday === undefined ||
-      thursday === undefined ||
-      friday === undefined ||
-      saturday === undefined ||
-      sunday === undefined ||
-      !sessionDuration
+      !availability ||
+      !sessionDuration ||
+      !startDate
     ) {
       return res.status(400).json({ error: 'All fields are required' });
     }
@@ -57,15 +46,9 @@ export default async function handler(req, res) {
     const existing = await db.select().from(userPreferences).where(eq(userPreferences.userId, user.id));
 
     const preferencesData = {
-      monday,
-      tuesday,
-      wednesday,
-      thursday,
-      friday,
-      saturday,
-      sunday,
+      availability,
       sessionDuration: parseInt(sessionDuration, 10),
-      startDate: startDate ? new Date(startDate) : null,
+      startDate: new Date(startDate),
     };
 
     if (existing.length > 0) {

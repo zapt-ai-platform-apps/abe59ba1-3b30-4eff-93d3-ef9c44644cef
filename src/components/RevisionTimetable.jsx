@@ -4,7 +4,6 @@ import {
   format,
   eachDayOfInterval,
   isSameDay,
-  getDay,
   isAfter,
   isBefore,
   parseISO,
@@ -60,7 +59,7 @@ export default function RevisionTimetable(props) {
         return;
       }
 
-      const dayIndex = getDay(day); // 0 (Sunday) to 6 (Saturday)
+      const dayIndex = day.getDay(); // 0 (Sunday) to 6 (Saturday)
       const dayNames = [
         'sunday',
         'monday',
@@ -72,19 +71,17 @@ export default function RevisionTimetable(props) {
       ];
       const dayName = dayNames[dayIndex];
 
-      const sessionPreference = preferences()[dayName];
+      const dayAvailability = preferences().availability[dayName];
 
-      if (sessionPreference === 'morning' || sessionPreference === 'both') {
-        availableSessions.push({ date: day, time: 'Morning' });
-      }
-
-      if (sessionPreference === 'afternoon' || sessionPreference === 'both') {
-        availableSessions.push({ date: day, time: 'Afternoon' });
+      for (let hour = 8; hour < 20; hour++) {
+        if (dayAvailability[hour]) {
+          availableSessions.push({ date: day, time: hour });
+        }
       }
     });
 
-    // Sort available sessions by date
-    availableSessions.sort((a, b) => a.date - b.date);
+    // Sort available sessions by date and time
+    availableSessions.sort((a, b) => a.date - b.date || a.time - b.time);
 
     // Initialize subject session counts
     const subjectSessionCounts = {};
@@ -188,22 +185,22 @@ export default function RevisionTimetable(props) {
       }
     });
 
-    // Group sessions by date
+    // Group sessions by date and time
     const timetableMap = {};
 
     assignedSessions.forEach((session) => {
       const dateKey = session.date.toDateString();
       if (!timetableMap[dateKey]) {
-        timetableMap[dateKey] = { date: session.date, sessions: [], exams: [], isExamDay: false };
+        timetableMap[dateKey] = { date: session.date, sessions: {}, exams: [], isExamDay: false };
       }
-      timetableMap[dateKey].sessions.push(session);
+      timetableMap[dateKey].sessions[session.time] = session;
     });
 
     // Add exams on that date
     days.forEach((day) => {
       const dateKey = day.toDateString();
       if (!timetableMap[dateKey]) {
-        timetableMap[dateKey] = { date: day, sessions: [], exams: [], isExamDay: false };
+        timetableMap[dateKey] = { date: day, sessions: {}, exams: [], isExamDay: false };
       }
       const examsOnDay = futureExams.filter((exam) => {
         const examDate = new Date(exam.examDate);
@@ -222,39 +219,36 @@ export default function RevisionTimetable(props) {
   return (
     <div class="mt-8">
       <h2 class="text-2xl font-bold mb-4 text-purple-600">Revision Timetable</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <For each={timetable()}>
-          {(day) => (
-            <div
-              class={`bg-white p-4 rounded-lg shadow-md ${
-                day.isExamDay ? 'border-2 border-red-500' : ''
-              }`}
-            >
-              <p class="font-semibold text-lg text-purple-600 mb-2">
-                {format(day.date, 'EEEE, MMMM do')}
-              </p>
-              <For each={day.exams}>
-                {(exam) => (
-                  <div class="mt-2">
-                    <p class="text-red-600 font-semibold">Exam: {exam.subject}</p>
-                  </div>
-                )}
-              </For>
-              {day.sessions.length > 0 ? (
-                <For each={day.sessions}>
-                  {(session) => (
-                    <p class="text-gray-800">
-                      {session.time}: {session.subject}
-                    </p>
-                  )}
-                </For>
-              ) : (
-                <p class="text-gray-800">No revision session scheduled.</p>
+      <For each={timetable()}>
+        {(day) => (
+          <div class={`mb-6 ${day.isExamDay ? 'border-2 border-red-500 rounded-lg' : ''}`}>
+            <h3 class="text-xl font-semibold mb-2 text-purple-600">
+              {format(day.date, 'EEEE, MMMM do')}
+            </h3>
+            <For each={day.exams}>
+              {(exam) => (
+                <div class="mt-2">
+                  <p class="text-red-600 font-semibold">Exam: {exam.subject}</p>
+                </div>
               )}
+            </For>
+            <div class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-12 gap-2 mt-2">
+              <For each={Array.from({ length: 12 }, (_, i) => 8 + i)}>
+                {(hour) => {
+                  const session = day.sessions[hour];
+                  const isAvailable = preferences().availability[format(day.date, 'cccc').toLowerCase()][hour];
+                  return (
+                    <div class={`p-2 rounded-lg text-center ${session ? 'bg-purple-200' : isAvailable ? 'bg-green-100' : 'bg-gray-200'}`}>
+                      <p class="text-sm">{hour}:00</p>
+                      {session && <p class="text-xs">{session.subject}</p>}
+                    </div>
+                  );
+                }}
+              </For>
             </div>
-          )}
-        </For>
-      </div>
+          </div>
+        )}
+      </For>
     </div>
   );
 }

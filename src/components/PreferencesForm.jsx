@@ -1,22 +1,41 @@
-import { createSignal, For } from 'solid-js';
+import { createSignal } from 'solid-js';
 import { supabase } from '../supabaseClient';
 
 export default function PreferencesForm(props) {
   const { fetchPreferences, preferences: existingPreferences = null, onCancel = null } = props;
 
+  const initialAvailability = () => {
+    if (existingPreferences?.availability) {
+      return existingPreferences.availability;
+    } else {
+      const daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+      const hours = Array.from({ length: 12 }, (_, i) => 8 + i);
+      const availability = {};
+      daysOfWeek.forEach(day => {
+        availability[day] = {};
+        hours.forEach(hour => {
+          availability[day][hour] = false;
+        });
+      });
+      return availability;
+    }
+  };
+
   const [preferences, setPreferences] = createSignal({
-    monday: existingPreferences?.monday || 'none',
-    tuesday: existingPreferences?.tuesday || 'none',
-    wednesday: existingPreferences?.wednesday || 'none',
-    thursday: existingPreferences?.thursday || 'none',
-    friday: existingPreferences?.friday || 'none',
-    saturday: existingPreferences?.saturday || 'none',
-    sunday: existingPreferences?.sunday || 'none',
+    availability: initialAvailability(),
     sessionDuration: existingPreferences?.sessionDuration || 30,
     startDate: existingPreferences?.startDate ? existingPreferences.startDate.split('T')[0] : '',
   });
 
   const [loading, setLoading] = createSignal(false);
+
+  const handleHourToggle = (day, hour) => {
+    setPreferences(prev => {
+      const updatedAvailability = { ...prev.availability };
+      updatedAvailability[day][hour] = !updatedAvailability[day][hour];
+      return { ...prev, availability: updatedAvailability };
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,30 +65,47 @@ export default function PreferencesForm(props) {
   };
 
   const daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+  const hours = Array.from({ length: 12 }, (_, i) => 8 + i);
 
   return (
     <div class="min-h-screen bg-gradient-to-br from-purple-100 to-blue-100 p-4 text-gray-800">
       <div class="h-full max-w-3xl mx-auto">
         <h1 class="text-3xl font-bold mb-6 text-center text-purple-600">Set Your Revision Preferences</h1>
         <form onSubmit={handleSubmit} class="space-y-6">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <For each={daysOfWeek}>
-              {(day) => (
-                <div class="flex flex-col">
-                  <label class="font-semibold capitalize mb-2">{day}</label>
-                  <select
-                    value={preferences()[day]}
-                    onInput={(e) => setPreferences({ ...preferences(), [day]: e.target.value })}
-                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 box-border cursor-pointer"
-                  >
-                    <option value="none">None</option>
-                    <option value="morning">Morning</option>
-                    <option value="afternoon">Afternoon</option>
-                    <option value="both">Both</option>
-                  </select>
-                </div>
-              )}
-            </For>
+          <div class="overflow-x-auto">
+            <table class="min-w-full bg-white rounded-lg shadow-md">
+              <thead>
+                <tr>
+                  <th class="px-4 py-2 text-left"></th>
+                  <For each={hours}>
+                    {(hour) => (
+                      <th class="px-2 py-2 text-center text-sm">{hour}:00</th>
+                    )}
+                  </For>
+                </tr>
+              </thead>
+              <tbody>
+                <For each={daysOfWeek}>
+                  {(day) => (
+                    <tr>
+                      <td class="px-4 py-2 font-semibold capitalize">{day}</td>
+                      <For each={hours}>
+                        {(hour) => (
+                          <td class="px-2 py-2 text-center">
+                            <input
+                              type="checkbox"
+                              checked={preferences().availability[day][hour]}
+                              onInput={() => handleHourToggle(day, hour)}
+                              class="cursor-pointer"
+                            />
+                          </td>
+                        )}
+                      </For>
+                    </tr>
+                  )}
+                </For>
+              </tbody>
+            </table>
           </div>
           <div>
             <label class="font-semibold mb-2 block">Session Duration (minutes)</label>

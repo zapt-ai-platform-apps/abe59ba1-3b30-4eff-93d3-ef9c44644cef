@@ -2,7 +2,7 @@ import { exams } from '../drizzle/schema.js';
 import { authenticateUser } from "./_apiUtils.js";
 import { neon } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-http';
-import { eq, gt, and } from 'drizzle-orm';
+import { eq, and, gte } from 'drizzle-orm';
 
 import * as Sentry from '@sentry/node';
 
@@ -33,7 +33,8 @@ export default async function handler(req, res) {
 
     const result = await db.select()
       .from(exams)
-      .where(and(eq(exams.userId, user.id), gt(exams.examDate, today)));
+      .where(and(eq(exams.userId, user.id), gte(exams.examDate, today)))
+      .orderBy(exams.examDate);
 
     res.status(200).json(result);
   } catch (error) {

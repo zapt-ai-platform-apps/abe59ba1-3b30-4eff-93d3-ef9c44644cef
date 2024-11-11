@@ -1,6 +1,6 @@
 # UpGrade
 
-UpGrade is an app designed to help students prepare for their school examinations by creating personalized revision timetables presented in a monthly calendar format. The app schedules revision sessions for each of the student's subjects equally based on available session slots and preferences, ensuring efficient use of study time leading up to exams.
+UpGrade is an app designed to help students prepare for their school examinations by creating personalized revision timetables presented in a detailed calendar format. The app schedules revision sessions for each of the student's subjects based on available hourly slots and preferences, ensuring efficient use of study time leading up to exams.
 
 ## Features
 
@@ -11,18 +11,18 @@ UpGrade is an app designed to help students prepare for their school examination
   - **Edit Exams**: Modify existing exams to update any details.
   - **Delete Exams**: Remove exams that are no longer relevant.
 - **Preference Management**: Edit your revision schedule preferences, session durations, and start date at any time.
-- **Personalized Revision Timetable**: Automatically generates a monthly calendar with scheduled revision sessions starting from your selected start date. The app distributes available revision sessions equally among all subjects, considering the period from the start date up to each exam.
+- **Personalized Revision Timetable**: Automatically generates a detailed calendar with scheduled revision sessions starting from your selected start date. The app distributes available revision sessions among all subjects, considering the period from the start date up to each exam.
+  - **Hourly Schedule**: Each day in the calendar displays hourly slots from **8 AM to 8 PM**.
+    - **Available Times**: Indicates which hours you are available for revision based on your preferences.
+    - **Session Allocation**: Revision sessions are allocated to specific hours within your available times.
   - **Custom Start Date**: Begin your revision timetable from a date of your choosing, allowing flexibility in planning.
-  - **Concurrent Scheduling**: The app schedules regular revision sessions for all upcoming exams, ensuring continuous preparation across all subjects.
-  - **Consistent Scheduling Before Exams**:
-    - Revision sessions in the week before an exam are sequenced the same as any other week, rather than focusing solely on that exam.
-  - **Special Scheduling Before Exams**:
-    - **If a day has one or more exams scheduled, the day before will have at least one revision session for each exam**, ensuring dedicated preparation time.
-    - The app prioritizes assigning available revision sessions on the day before to the subjects of the upcoming exams.
-  - **Exclusion of Exam Dates**: Revision sessions are **not scheduled on the dates of exams**, allowing students to focus on their tests without additional study sessions.
-  - **No Sessions After Exam Dates**: Revision sessions are **not scheduled on or after** the exam date for a subject.
+  - **Scheduling Logic**:
+    - **Exam Days**: No revision sessions are scheduled on exam dates, allowing you to focus on your exams.
+    - **Day Before Exam**: The day before an exam will have at least one revision session for each upcoming exam subject, ensuring dedicated preparation time.
+    - **Even Distribution**: Revision sessions are distributed among all subjects, ensuring continuous preparation across all subjects.
+    - **Exclusion of Past Exams**: The timetable only displays upcoming exams and associated revision sessions. Exams that have already occurred are not shown.
+    - **No Sessions After Exam Dates**: Revision sessions are **not scheduled on or after** the exam date for a subject.
 - **Responsive Design**: Accessible on all devices with a user-friendly interface.
-- **Exclusion of Past Exams**: The timetable only displays upcoming exams and associated revision sessions. Exams that have already occurred are not shown.
 - **Accurate Session Scheduling**: Ensures that revision sessions are scheduled without duplication, providing a clear and organized timetable.
 
 ## User Journeys
@@ -48,11 +48,8 @@ UpGrade is an app designed to help students prepare for their school examination
 
 1. **Set Revision Schedule**
    - Upon first login, you're prompted to select your preferred revision times for each day of the week.
-   - For each day (Monday to Sunday), choose one of the following:
-     - **None**: No revision session.
-     - **Morning**: Revision session in the morning.
-     - **Afternoon**: Revision session in the afternoon.
-     - **Both**: Revision sessions in both morning and afternoon.
+   - For each day (Monday to Sunday), select the hours you are available for revision between **8 AM and 8 PM**.
+     - **Hourly Selection**: You can select specific hours by checking the boxes next to each hour.
 2. **Set Session Duration**
    - Select how long each revision session should last.
    - Choose a duration between a minimum of **30 minutes** and a maximum of **2 hours**, in 15-minute increments.
@@ -111,8 +108,12 @@ UpGrade is an app designed to help students prepare for their school examination
    - Scroll down to the "Revision Timetable" section.
 2. **Understand the Schedule**
    - The app generates a personalized revision timetable starting from your selected start date.
-   - Revision sessions are scheduled equally among all your subjects.
-   - The timetable considers your availability preferences and schedules sessions from the start date up to each exam.
+   - Each day displays hourly slots from **8 AM to 8 PM**.
+   - **Available Hours**:
+     - Hours you are available for revision are displayed based on your preferences.
+   - **Scheduled Sessions**:
+     - Revision sessions are allocated to specific hours within your available times.
+     - The timetable considers your availability preferences and schedules sessions from the start date up to each exam.
    - **Special Scheduling Before Exams**:
      - If a day has one or more exams scheduled, the **day before will have at least one revision session for each exam**, ensuring you have dedicated time to prepare for each subject.
      - The app prioritizes assigning available revision sessions on the day before to the subjects of the upcoming exams.
@@ -121,10 +122,9 @@ UpGrade is an app designed to help students prepare for their school examination
    - **No revision sessions are scheduled on exam dates, allowing you to focus on your exams.**
    - **Exam Dates**: Exam days are highlighted with a red border.
    - **Only upcoming exams and revision sessions are displayed; past exams are excluded.**
-   - Each day displays the scheduled revision sessions with the subject allocated.
    - Duplicate sessions are eliminated, ensuring a clear timetable.
 3. **Detailed View**
-   - Click on a date to view detailed revision tasks (Future Functionality).
+   - Click on a session to view detailed revision tasks (Future Functionality).
 
 ### 7. Logging Out
 
@@ -138,6 +138,7 @@ UpGrade is an app designed to help students prepare for their school examination
 - **Neon Postgres Database**: Stores exam information, user data, and preferences.
 - **Date-fns**: Handles date formatting and manipulation.
 - **Progressier**: Adds Progressive Web App (PWA) support to the app.
+- **Sentry**: Used for error logging and monitoring.
 
 ## Environment Variables
 

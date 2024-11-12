@@ -38,8 +38,8 @@ export default function AuthenticatedApp(props) {
     <Show
       when={!loadingPreferences()}
       fallback={
-        <div class="flex items-center justify-center min-h-screen bg-black">
-          <p class="text-white">Loading...</p>
+        <div class="flex items-center justify-center min-h-screen bg-black text-white">
+          <p>Loading...</p>
         </div>
       }
     >

@@ -218,17 +218,17 @@ export default function RevisionTimetable(props) {
 
   return (
     <div class="mt-8">
-      <h2 class="text-2xl font-bold mb-4 text-white">Revision Timetable</h2>
+      <h2 class="text-2xl font-bold mb-4 text-purple-600">Revision Timetable</h2>
       <For each={timetable()}>
         {(day) => (
           <div class={`mb-6 ${day.isExamDay ? 'border-2 border-red-500 rounded-lg' : ''}`}>
-            <h3 class="text-xl font-semibold mb-2 text-white">
+            <h3 class="text-xl font-semibold mb-2 text-purple-500">
               {format(day.date, 'EEEE, MMMM do')}
             </h3>
             <For each={day.exams}>
               {(exam) => (
                 <div class="mt-2">
-                  <p class="text-red-500 font-semibold">Exam: {exam.subject}</p>
+                  <p class="text-red-400 font-semibold">Exam: {exam.subject}</p>
                 </div>
               )}
             </For>

@@ -5,7 +5,6 @@ UpGrade is an app designed to help students prepare for their school examination
 ## Features
 
 - **User Authentication**: Secure login using your school email or social providers like Google, Facebook, and Apple.
-- **Dark Theme**: The app features a black background with white text for a comfortable viewing experience.
 - **Initial Setup**: Upon first login, set your preferred revision schedule, session duration, and start date for your revision.
 - **Exam Management**:
   - **Add Exams**: Enter details like subject, date, examination board, and teacher's name.
@@ -25,6 +24,7 @@ UpGrade is an app designed to help students prepare for their school examination
     - **No Sessions After Exam Dates**: Revision sessions are **not scheduled on or after** the exam date for a subject.
 - **Responsive Design**: Accessible on all devices with a user-friendly interface.
 - **Accurate Session Scheduling**: Ensures that revision sessions are scheduled without duplication, providing a clear and organized timetable.
+- **Dark Theme**: The app features a black background with white text for a comfortable viewing experience, especially in low-light environments.
 
 ## User Journeys
 

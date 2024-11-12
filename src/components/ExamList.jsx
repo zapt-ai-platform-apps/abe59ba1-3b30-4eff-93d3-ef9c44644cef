@@ -51,7 +51,7 @@ export default function ExamList(props) {
             <For each={upcomingExams()}>
               {(exam) => (
                 <div class="bg-gray-800 p-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 cursor-pointer">
-                  <p class="font-semibold text-lg text-white mb-1">{exam.subject}</p>
+                  <p class="font-semibold text-lg text-purple-400 mb-1">{exam.subject}</p>
                   <p class="text-gray-300 mb-1">{format(new Date(exam.examDate), 'PPP')}</p>
                   <p class="text-gray-300 mb-1">Exam Board: {exam.examBoard}</p>
                   <p class="text-gray-300">Teacher: {exam.teacherName}</p>

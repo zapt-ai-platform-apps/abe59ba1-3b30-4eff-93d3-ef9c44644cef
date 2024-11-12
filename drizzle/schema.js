@@ -13,7 +13,7 @@ export const exams = pgTable('exams', {
 export const userPreferences = pgTable('user_preferences', {
   id: serial('id').primaryKey(),
   userId: uuid('user_id').notNull(),
-  availability: jsonb('availability').notNull(), // Stores availability per day per hour
+  availability: jsonb('availability').notNull(),
   sessionDuration: integer('session_duration').notNull(),
   startDate: date('start_date').notNull(),
 });

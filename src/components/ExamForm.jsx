@@ -74,7 +74,7 @@ export default function ExamForm(props) {
           placeholder="Subject"
           value={examData().subject}
           onInput={(e) => setExamData({ ...examData(), subject: e.target.value })}
-          class="w-full p-3 border border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent box-border text-white placeholder-gray-400"
+          class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent box-border text-black"
           required
         />
         <input
@@ -82,7 +82,7 @@ export default function ExamForm(props) {
           placeholder="Exam Date"
           value={examData().examDate}
           onInput={(e) => setExamData({ ...examData(), examDate: e.target.value })}
-          class="w-full p-3 border border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent box-border text-white placeholder-gray-400"
+          class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent box-border text-black"
           required
         />
         <input
@@ -90,7 +90,7 @@ export default function ExamForm(props) {
           placeholder="Examination Board"
           value={examData().examBoard}
           onInput={(e) => setExamData({ ...examData(), examBoard: e.target.value })}
-          class="w-full p-3 border border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent box-border text-white placeholder-gray-400"
+          class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent box-border text-black"
           required
         />
         <input
@@ -98,7 +98,7 @@ export default function ExamForm(props) {
           placeholder="Teacher's Name"
           value={examData().teacherName}
           onInput={(e) => setExamData({ ...examData(), teacherName: e.target.value })}
-          class="w-full p-3 border border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent box-border text-white placeholder-gray-400"
+          class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent box-border text-black"
           required
         />
         <div class="flex space-x-4">

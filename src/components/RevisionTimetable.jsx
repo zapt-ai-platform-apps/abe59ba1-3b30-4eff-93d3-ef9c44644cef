@@ -218,17 +218,17 @@ export default function RevisionTimetable(props) {
 
   return (
     <div class="mt-8">
-      <h2 class="text-2xl font-bold mb-4 text-purple-600">Revision Timetable</h2>
+      <h2 class="text-2xl font-bold mb-4 text-white">Revision Timetable</h2>
       <For each={timetable()}>
         {(day) => (
           <div class={`mb-6 ${day.isExamDay ? 'border-2 border-red-500 rounded-lg' : ''}`}>
-            <h3 class="text-xl font-semibold mb-2 text-purple-600">
+            <h3 class="text-xl font-semibold mb-2 text-white">
               {format(day.date, 'EEEE, MMMM do')}
             </h3>
             <For each={day.exams}>
               {(exam) => (
                 <div class="mt-2">
-                  <p class="text-red-600 font-semibold">Exam: {exam.subject}</p>
+                  <p class="text-red-500 font-semibold">Exam: {exam.subject}</p>
                 </div>
               )}
             </For>
@@ -238,9 +238,9 @@ export default function RevisionTimetable(props) {
                   const session = day.sessions[hour];
                   const isAvailable = preferences().availability[format(day.date, 'cccc').toLowerCase()][hour];
                   return (
-                    <div class={`p-2 rounded-lg text-center ${session ? 'bg-purple-200' : isAvailable ? 'bg-green-100' : 'bg-gray-200'}`}>
-                      <p class="text-sm">{hour}:00</p>
-                      {session && <p class="text-xs">{session.subject}</p>}
+                    <div class={`p-2 rounded-lg text-center ${session ? 'bg-purple-700' : isAvailable ? 'bg-green-700' : 'bg-gray-700'}`}>
+                      <p class="text-sm text-white">{hour}:00</p>
+                      {session && <p class="text-xs text-white">{session.subject}</p>}
                     </div>
                   );
                 }}

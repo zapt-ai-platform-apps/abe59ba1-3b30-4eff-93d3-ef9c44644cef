@@ -38,8 +38,8 @@ export default function ExamList(props) {
 
   return (
     <div>
-      <h2 class="text-2xl font-bold mb-4 text-purple-600">Your Exams</h2>
-      <Show when={!loading()} fallback={<p>Loading exams...</p>}>
+      <h2 class="text-2xl font-bold mb-4 text-white">Your Exams</h2>
+      <Show when={!loading()} fallback={<p class="text-white">Loading exams...</p>}>
         <Show when={!editingExam()} fallback={
           <ExamForm
             exam={editingExam()}
@@ -50,11 +50,11 @@ export default function ExamList(props) {
           <div class="space-y-4 max-h-[calc(100vh-300px)] overflow-y-auto pr-4">
             <For each={upcomingExams()}>
               {(exam) => (
-                <div class="bg-white p-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 cursor-pointer">
-                  <p class="font-semibold text-lg text-purple-600 mb-1">{exam.subject}</p>
-                  <p class="text-gray-700 mb-1">{format(new Date(exam.examDate), 'PPP')}</p>
-                  <p class="text-gray-700 mb-1">Exam Board: {exam.examBoard}</p>
-                  <p class="text-gray-700">Teacher: {exam.teacherName}</p>
+                <div class="bg-gray-800 p-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 cursor-pointer">
+                  <p class="font-semibold text-lg text-white mb-1">{exam.subject}</p>
+                  <p class="text-gray-300 mb-1">{format(new Date(exam.examDate), 'PPP')}</p>
+                  <p class="text-gray-300 mb-1">Exam Board: {exam.examBoard}</p>
+                  <p class="text-gray-300">Teacher: {exam.teacherName}</p>
                   <div class="flex space-x-2 mt-2">
                     <button
                       class="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300 ease-in-out transform hover:scale-105 cursor-pointer"

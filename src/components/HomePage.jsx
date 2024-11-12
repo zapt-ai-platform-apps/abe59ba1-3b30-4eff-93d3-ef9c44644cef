@@ -58,10 +58,10 @@ export default function HomePage(props) {
   };
 
   return (
-    <div class="min-h-screen bg-gradient-to-br from-purple-100 to-blue-100 p-4 text-gray-800">
+    <div class="min-h-screen bg-black p-4 text-white">
       <div class="h-full max-w-6xl mx-auto">
         <div class="flex justify-between items-center mb-8">
-          <h1 class="text-4xl font-bold text-purple-600">UpGrade</h1>
+          <h1 class="text-4xl font-bold text-white">UpGrade</h1>
           <button
             class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-6 rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-red-400 transition duration-300 ease-in-out transform hover:scale-105 cursor-pointer"
             onClick={handleSignOut}

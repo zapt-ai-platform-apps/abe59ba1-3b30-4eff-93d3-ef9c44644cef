@@ -68,18 +68,18 @@ export default function PreferencesForm(props) {
   const hours = Array.from({ length: 12 }, (_, i) => 8 + i);
 
   return (
-    <div class="min-h-screen bg-gradient-to-br from-purple-100 to-blue-100 p-4 text-gray-800">
+    <div class="min-h-screen bg-black p-4 text-white">
       <div class="h-full max-w-3xl mx-auto">
-        <h1 class="text-3xl font-bold mb-6 text-center text-purple-600">Set Your Revision Preferences</h1>
+        <h1 class="text-3xl font-bold mb-6 text-center text-white">Set Your Revision Preferences</h1>
         <form onSubmit={handleSubmit} class="space-y-6">
           <div class="overflow-x-auto">
-            <table class="min-w-full bg-white rounded-lg shadow-md">
+            <table class="min-w-full bg-gray-800 rounded-lg shadow-md">
               <thead>
                 <tr>
-                  <th class="px-4 py-2 text-left"></th>
+                  <th class="px-4 py-2 text-left text-white"></th>
                   <For each={hours}>
                     {(hour) => (
-                      <th class="px-2 py-2 text-center text-sm">{hour}:00</th>
+                      <th class="px-2 py-2 text-center text-sm text-white">{hour}:00</th>
                     )}
                   </For>
                 </tr>
@@ -88,7 +88,7 @@ export default function PreferencesForm(props) {
                 <For each={daysOfWeek}>
                   {(day) => (
                     <tr>
-                      <td class="px-4 py-2 font-semibold capitalize">{day}</td>
+                      <td class="px-4 py-2 font-semibold capitalize text-white">{day}</td>
                       <For each={hours}>
                         {(hour) => (
                           <td class="px-2 py-2 text-center">
@@ -116,7 +116,7 @@ export default function PreferencesForm(props) {
               step="15"
               value={preferences().sessionDuration}
               onInput={(e) => setPreferences({ ...preferences(), sessionDuration: e.target.value })}
-              class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 box-border"
+              class="w-full p-3 border border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-600 box-border text-white placeholder-gray-400"
             />
           </div>
           <div>
@@ -125,7 +125,7 @@ export default function PreferencesForm(props) {
               type="date"
               value={preferences().startDate}
               onInput={(e) => setPreferences({ ...preferences(), startDate: e.target.value })}
-              class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 box-border"
+              class="w-full p-3 border border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-600 box-border text-white placeholder-gray-400"
               required
             />
           </div>
